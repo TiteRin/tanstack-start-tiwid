@@ -1,0 +1,25 @@
+@layer base {
+    body {
+        @apply font-body;
+    }
+
+    h1 {
+        @apply font-heading text-4xl md:text-5xl font-bold tracking-tight;
+    }
+
+    h2 {
+        @apply font-heading text-3xl font-semibold;
+    }
+
+    h3 {
+        @apply font-heading text-2xl font-semibold;
+    }
+
+    p {
+        @apply font-body text-base leading-relaxed;
+    }
+
+    .text-praise {
+        @apply font-fantasy text-3xl font-bold;
+    }
+}

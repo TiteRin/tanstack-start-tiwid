@@ -20,7 +20,7 @@ export default function LoginForm({handleSignIn, error}: LoginFormProps) {
 
     return (
         <>
-            <h1 className="text-2xl font-bold mb-6 font-heading">Sign in</h1>
+            <h1 className="text-2xl font-bold mb-6">Sign in</h1>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={onSubmit} className="space-y-4">
                 <div>
