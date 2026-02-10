@@ -13,7 +13,7 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true
     },
-    onAfterSignUp: async ({ user, session }) => {
+    onAfterSignUp: async ({ user }) => {
         console.log(`User ${user.email} signed up`);
     },
     session: {
