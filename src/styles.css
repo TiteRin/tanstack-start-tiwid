@@ -1,5 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&family=Fredoka:wght@300..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import "tailwindcss";
+
+@theme {
+    --font-heading: "Fredoka", sans-serif;
+    --font-body: "Nunito", sans-serif;
+    --font-fantasy: "DynaPuff", sans-serif;
+}
+
+@layer utilities {
+    .font-heading {
+        @apply font-heading;
+    }
+
+    .font-body {
+        @apply font-body;
+    }
+
+    .font-fantasy {
+        @apply font-fantasy;
+    }
+}
 
 body {
     @apply m-0;
@@ -13,22 +33,4 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
-}
-
-
-.dynapuff-400 {
-    font-family: "DynaPuff", system-ui;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-    font-variation-settings: "wdth" 100;
-}
-
-.dynapuff-700 {
-    font-family: "DynaPuff", system-ui;
-    font-optical-sizing: auto;
-    font-weight: 700;
-    font-style: normal;
-    font-variation-settings:
-            "wdth" 100;
 }
