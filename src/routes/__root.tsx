@@ -15,14 +15,14 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Tiwid! - This Is What I Did Today ! Not another To Do list, but a Done List !',
       },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
-      },
+      }
     ],
   }),
 
