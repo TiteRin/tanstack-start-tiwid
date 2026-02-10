@@ -27,6 +27,7 @@ export default function LoginForm({handleSignIn, error}: LoginFormProps) {
                     <Label>E-mail</Label>
                     <Input
                         type="email"
+                        data-testid="email-input"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full p-2 border rounded"
@@ -37,6 +38,7 @@ export default function LoginForm({handleSignIn, error}: LoginFormProps) {
                     <Label>Password</Label>
                     <Input
                         type="password"
+                        data-testid="password-input"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full p-2 border rounded"
