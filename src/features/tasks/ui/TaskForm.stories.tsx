@@ -42,9 +42,11 @@ export const HappyPath: Story = {
         await userEvent.click(submitButton);
         await expect(submitButton).toBeDisabled();
         await expect(input).toHaveValue("");
+        await expect(canvas.getByTestId('submitting-icon')).toBeInTheDocument();
         await new Promise((resolve) => setTimeout(resolve, 350));
         await expect(submitButton).not.toBeDisabled();
         await expect(canvas.getByText(/A task has been added!/)).toBeInTheDocument();
+        await expect(canvas.getByTestId('success-icon')).toBeInTheDocument();
     }
 };
 
