@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
 
 type Summary = |
-    { type: "today", count: number} |
-    { type: "yesterday", count: number} |
-    { type: "none", count: 0}
+    { type: "today", count: number } |
+    { type: "yesterday", count: number } |
+    { type: "none", count: 0 }
 
 export function useUserDailySummary(useCase: any) {
 

@@ -36,3 +36,5 @@ export class GetUserDailySummary {
         };
     }
 }
+
+export type {GetUserDailySummaryResponse}
