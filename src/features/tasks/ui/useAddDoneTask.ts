@@ -1,9 +1,6 @@
 import {useState} from "react";
 import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTask.ts";
-
-const feedback = "A task has been added!"
-
-type TaskActionStatus = "idle" | "submitting" | "success" | "error";
+import {TaskActionStatus} from "@/features/tasks/ui/taskAction.types.ts";
 
 export function useAddDoneTask(
     action: AddDoneTaskAction
@@ -17,7 +14,7 @@ export function useAddDoneTask(
 
         try {
             const result = await action.execute(task, 1);
-            setMessage(result.message ?? feedback);
+            setMessage(result.message);
             setStatus("success");
         } catch (e) {
             console.error(e);

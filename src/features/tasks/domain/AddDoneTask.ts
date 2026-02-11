@@ -1,5 +1,9 @@
 import {taskSchema} from "@/features/tasks/domain/TaskSchema.ts";
 
+import {TaskRepository} from "./ports/TaskRepository";
+import {TaskClock} from "./ports/TaskClock";
+import {TaskFeedbackGenerator} from "./ports/TaskFeedbackGenerator";
+
 type Task = {
     id: string;
     label: string;
@@ -11,20 +15,6 @@ type DoneTask = {
     userId: number;
     taskId: string;
     doneAt: Date;
-}
-
-interface TaskRepository {
-    findTaskByLabel: (label: string) => Task | null;
-    saveTask: (task: Task) => Task;
-    saveDoneTask: (doneTask: DoneTask) => DoneTask;
-}
-
-interface TaskClock {
-    now: () => Date;
-}
-
-interface TaskFeedbackGenerator {
-    generate: () => string;
 }
 
 export class AddDoneTaskAction {
@@ -69,5 +59,4 @@ export class AddDoneTaskAction {
     }
 }
 
-export type {TaskRepository, TaskClock, TaskFeedbackGenerator}
 export type {Task, DoneTask}
