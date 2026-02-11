@@ -36,7 +36,7 @@ export class AddDoneTaskAction {
     ) {
     }
 
-    execute(label: string, userId: number) {
+    async execute(label: string, userId: number) {
 
         const parsed = taskSchema.parse({label});
 

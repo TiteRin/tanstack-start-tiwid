@@ -7,17 +7,22 @@ export function useAddDoneTask(
     action: AddDoneTaskAction
 ) {
     const [message, setMessage] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     async function submit(task: string) {
 
+        setIsSubmitting(true);
+
         try {
-            const result = action.execute(task, 1);
+            const result = await action.execute(task, 1);
             setMessage(result.message ?? feedback);
         } catch (e) {
             console.error(e);
             setMessage("Please enter a task label");
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
-    return {submit, message};
+    return {submit, message, isSubmitting};
 }

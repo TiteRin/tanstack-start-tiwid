@@ -11,11 +11,11 @@ type TaskFormProps = {
     action?: AddDoneTaskAction
 }
 
-export default function TaskForm({ action }: TaskFormProps) {
+export default function TaskForm({action}: TaskFormProps) {
 
     const [task, setTask] = useState<string>("");
     const resolvedAction = action ?? createAddDoneTaskAction();
-    const {submit, message} = useAddDoneTask(resolvedAction);
+    const {submit, message, isSubmitting} = useAddDoneTask(resolvedAction);
 
     return (
         <form onSubmit={(e) => {
@@ -31,7 +31,7 @@ export default function TaskForm({ action }: TaskFormProps) {
                 />
             </fieldset>
 
-            <Button type="submit" className={clsx("w-full")} data-testid="task-submit">
+            <Button type="submit" className={clsx("w-full")} data-testid="task-submit" disabled={isSubmitting}>
                 I did it!
             </Button>
 
