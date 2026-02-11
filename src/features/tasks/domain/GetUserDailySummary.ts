@@ -37,4 +37,4 @@ export class GetUserDailySummary {
     }
 }
 
-export type {GetUserDailySummaryResponse}
+export type {GetUserDailySummaryResponse, GetUserDailySummaryRepository}
