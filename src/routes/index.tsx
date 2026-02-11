@@ -37,13 +37,13 @@ function App() {
       <div className="space-x-4">
         <Link
           to="/signin"
-          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition"
+          className="bg-primary px-6 py-2 rounded hover:bg-primary-hover transition"
         >
           Connexion
         </Link>
         <Link
           to="/signup"
-          className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 transition"
+          className=" border-amber-400 border-2 text-amber-400 hover:border-0 hover:text-primary hover:bg-primary-hover px-6 py-2 rounded transition"
         >
           Inscription
         </Link>

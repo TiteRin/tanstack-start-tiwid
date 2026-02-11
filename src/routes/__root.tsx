@@ -35,7 +35,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-sunset text-primary min-h-screen">
         {children}
         <TanStackDevtools
           config={{

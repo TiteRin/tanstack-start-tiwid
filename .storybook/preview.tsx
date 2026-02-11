@@ -4,7 +4,7 @@ import '../src/styles.css';
 const preview: Preview = {
   decorators: [
     (Story) => (
-        <div className={"bg-black text-white min-h-screen p-10"}>
+        <div className={"bg-sunset text-primary min-h-screen p-10"}>
             <Story />
         </div>
     )
