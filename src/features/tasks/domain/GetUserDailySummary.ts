@@ -3,7 +3,11 @@ type GetUserDailySummaryResponse = { type: GetUserDailySummaryType, count: numbe
 type GetUserDailySummaryRepository = { countDoneTasksByDate: (userId: number, date: Date) => Promise<number> };
 type GetUserDailySummaryClock = { now: () => Date };
 
-export class GetUserDailySummary {
+export interface GetUserDailySummaryPort {
+    execute: (userId: number) => Promise<GetUserDailySummaryResponse>;
+}
+
+export class GetUserDailySummary implements GetUserDailySummaryPort {
 
     constructor(private repository: GetUserDailySummaryRepository, private clock: GetUserDailySummaryClock) {
     }
