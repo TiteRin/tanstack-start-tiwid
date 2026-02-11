@@ -6,14 +6,14 @@ import {createAddDoneTaskAction} from "@/features/tasks/composition.ts";
 describe("useAddDoneTask - HOOK", () => {
 
     it("should set success message after submit", async () => {
-        const action = createAddDoneTaskAction()
+        const action = createAddDoneTaskAction();
         const {result} = renderHook(() => useAddDoneTask(action));
 
         await act(async () => {
             await result.current.submit("I ran some errands");
         });
 
-        expect(result.current.message).toBe("A task has been added!");
+        expect(result.current.status).toBe("success");
     });
 
     it("should set an error message when label is empty", async () => {
@@ -23,7 +23,7 @@ describe("useAddDoneTask - HOOK", () => {
             await result.current.submit("");
         });
 
-        expect(result.current.message).toBe("Please enter a task label");
+        expect(result.current.status).toBe("error");
     });
 
     it("calls injected action", async () => {
