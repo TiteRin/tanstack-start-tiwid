@@ -60,8 +60,8 @@ export default function TaskForm({action}: TaskFormProps) {
                 I did it!
             </Button>
 
-            {message && <p>{message}</p>}
             {status === "error" && <p className="text-red-500">Something went wrong…</p>}
+            {message && <p>{message}</p>}
         </form>
     )
 }

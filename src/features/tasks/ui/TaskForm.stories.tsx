@@ -50,3 +50,14 @@ export const HappyPath: Story = {
     }
 };
 
+export const Error: Story = {
+    play: async ({canvasElement}) => {
+        const canvas = within(canvasElement);
+
+        const submitButton = canvas.getByTestId('task-submit');
+
+        await userEvent.click(submitButton);
+        await expect(canvas.getByText(/Something went wrong…/)).toBeInTheDocument();
+        await expect(canvas.getByTestId('error-icon')).toBeInTheDocument();
+    }
+}
