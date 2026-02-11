@@ -34,6 +34,7 @@ export const HappyPath: Story = {
         const input = canvas.getByTestId('task-input');
         await userEvent.type(input, 'I ran some errands');
         await userEvent.click(canvas.getByTestId('task-submit'));
+        await expect(input).toHaveValue("");
         await expect(canvas.getByText(/A task has been added!/)).toBeInTheDocument();
     }
 };

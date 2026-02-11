@@ -21,6 +21,7 @@ export default function TaskForm({ action }: TaskFormProps) {
         <form onSubmit={(e) => {
             e.preventDefault();
             submit(task);
+            setTask("");
         }}>
             <fieldset className={clsx('p-4 mb-2')}>
                 <Label aria-placeholder="e.g. I ran some errands ">My achievement</Label>
