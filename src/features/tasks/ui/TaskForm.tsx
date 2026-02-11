@@ -3,14 +3,18 @@ import {Label} from "@/components/ui/Label.tsx";
 import {Input} from "@/components/ui/Input.tsx";
 import {Button} from "@/components/ui/Button.tsx";
 import clsx from "clsx";
+import {useAddDoneTask} from "@/features/tasks/ui/useAddDoneTask.ts";
 
 export default function TaskForm() {
 
     const [task, setTask] = useState<string>("");
-    const [message, setMessage] = useState<string>("");
+    const {submit, message} = useAddDoneTask();
 
     return (
-        <form onSubmit={(e) => { e.preventDefault(); }}>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            submit(task);
+        }}>
             <fieldset className={clsx('p-4 mb-2')}>
                 <Label aria-placeholder="e.g. I ran some errands ">My achievement</Label>
                 <Input value={task}
