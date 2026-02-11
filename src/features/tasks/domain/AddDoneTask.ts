@@ -19,16 +19,20 @@ interface TaskRepository {
     saveDoneTask: (doneTask: DoneTask) => DoneTask;
 }
 
+interface Clock {
+    now: () => Date;
+}
+
 export class AddDoneTaskAction {
 
-    constructor(private repository: TaskRepository) {
+    constructor(private repository: TaskRepository, private clock: Clock) {
     }
 
     execute(label: string, userId: number) {
 
         const parsed = taskSchema.parse({label});
 
-        let task: Task | null = this.repository.findTaskByLabel();
+        let task: Task | null = this.repository.findTaskByLabel(parsed.label);
 
         if (!task) {
             task = {
@@ -44,7 +48,7 @@ export class AddDoneTaskAction {
             id: crypto.randomUUID(),
             userId,
             taskId: task.id,
-            doneAt: new Date
+            doneAt: this.clock.now()
         }
 
         this.repository.saveDoneTask(doneTask);
@@ -53,4 +57,5 @@ export class AddDoneTaskAction {
     }
 }
 
-export type {TaskRepository}
+export type {TaskRepository, Clock}
+export type {Task, DoneTask}
