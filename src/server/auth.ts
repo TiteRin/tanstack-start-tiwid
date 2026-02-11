@@ -13,9 +13,6 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true
     },
-    onAfterSignUp: async ({ user }) => {
-        console.log(`User ${user.email} signed up`);
-    },
     session: {
         expiresIn: 60 * 60 * 24 * 30
     },
