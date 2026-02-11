@@ -1,26 +1,19 @@
 import {useState} from "react";
-import {AddDoneTaskAction, Clock} from "@/features/tasks/domain/AddDoneTask.ts";
-import {InMemoryTaskRepository} from "@/features/tasks/infrastructure/InMemoryTaskRepository.ts";
-
-const clock: Clock = {
-    now: () => new Date(),
-}
+import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTask.ts";
 
 const feedback = "A task has been added!"
 
-export function useAddDoneTask() {
+export function useAddDoneTask(
+    action: AddDoneTaskAction
+) {
     const [message, setMessage] = useState<string>("");
-
-    const repository = new InMemoryTaskRepository();
-    const action = new AddDoneTaskAction(repository, clock);
 
     async function submit(task: string) {
 
         try {
             action.execute(task, 1);
             setMessage(feedback);
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e);
             setMessage("Please enter a task label");
         }
