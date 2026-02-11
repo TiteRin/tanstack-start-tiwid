@@ -4,7 +4,7 @@ import {useUserDailySummary} from "@/features/tasks/ui/useUserDailySummary.ts";
 
 describe("useUserDailySummary - HOOK", () => {
 
-    it("returns today summary", async () => {
+    it("when there are done task today, should return today summary", async () => {
 
         const fakeUseCase = {
             execute: async () => {
@@ -21,7 +21,7 @@ describe("useUserDailySummary - HOOK", () => {
         });
     });
 
-    it ("returns yesterday summary", async () => {
+    it ("else, whene there are done tasks yesterday, should return yesterday summary", async () => {
         const fakeUseCase = {
             execute: async () => {
                 return {
@@ -36,4 +36,20 @@ describe("useUserDailySummary - HOOK", () => {
             expect(result.current.summary).toBe("You did 5 tasks yesterday!");
         });
     });
+
+    it ("else, should return nothing", async() => {
+        const fakeUseCase = {
+            execute: async () => {
+                return {
+                    type: "none",
+                    count: 0
+                }
+            }
+        };
+
+        const {result} = renderHook(() => useUserDailySummary(fakeUseCase as any));
+        await waitFor(() => {
+            expect(result.current.summary).toBe("");
+        });
+    })
 });
