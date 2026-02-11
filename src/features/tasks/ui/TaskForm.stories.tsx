@@ -51,12 +51,25 @@ export const HappyPath: Story = {
 };
 
 export const Error: Story = {
+    render: () => {
+
+        const fakeAction = {
+            execute: async () => {
+                await new Promise((resolve) => setTimeout(resolve, 300));
+                throw new Error("Failure");
+            }
+        } as any;
+
+        return <TaskForm action={fakeAction} />;
+    },
     play: async ({canvasElement}) => {
         const canvas = within(canvasElement);
 
         const submitButton = canvas.getByTestId('task-submit');
 
         await userEvent.click(submitButton);
+        await new Promise((resolve) => setTimeout(resolve, 350));
+
         await expect(canvas.getByText(/Something went wrong…/)).toBeInTheDocument();
         await expect(canvas.getByTestId('error-icon')).toBeInTheDocument();
     }
