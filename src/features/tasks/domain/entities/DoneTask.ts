@@ -1,6 +1,6 @@
 export type DoneTask = {
-    id: string;
+    id: number;
     userId: number;
-    taskId: string;
+    taskId: number;
     doneAt: Date;
 }

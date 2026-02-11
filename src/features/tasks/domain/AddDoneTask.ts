@@ -24,7 +24,6 @@ export class AddDoneTaskAction {
         if (!task) {
 
             task = {
-                id: crypto.randomUUID(),
                 label: parsed.label,
                 userId
             } as Task;
@@ -32,12 +31,11 @@ export class AddDoneTaskAction {
             task = this.repository.saveTask(task);
         }
 
-        const doneTask: DoneTask = {
-            id: crypto.randomUUID(),
+        const doneTask = {
             userId,
             taskId: task.id,
             doneAt: this.clock.now()
-        }
+        } as DoneTask;
 
         this.repository.saveDoneTask(doneTask);
 
