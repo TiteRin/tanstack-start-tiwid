@@ -25,7 +25,7 @@ describe("GetUserDailySummary", () => {
 
         const fakeNow = new Date(2025, 2, 10);
         const fakeRepo = {
-            countDoneTasksByDate: async (userId: number, date: Date) => {
+            countDoneTasksByDate: async (_: any, date: Date) => {
                 if (date.getTime() === fakeNow.getTime()) return 0;
                 return 5;
             }
