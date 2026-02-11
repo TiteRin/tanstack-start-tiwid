@@ -19,13 +19,21 @@ interface TaskRepository {
     saveDoneTask: (doneTask: DoneTask) => DoneTask;
 }
 
-interface Clock {
+interface TaskClock {
     now: () => Date;
+}
+
+interface TaskFeedbackGenerator {
+    generate: () => string;
 }
 
 export class AddDoneTaskAction {
 
-    constructor(private repository: TaskRepository, private clock: Clock) {
+    constructor(
+        private repository: TaskRepository,
+        private clock: TaskClock,
+        private feedbackGenerator: TaskFeedbackGenerator
+    ) {
     }
 
     execute(label: string, userId: number) {
@@ -53,9 +61,13 @@ export class AddDoneTaskAction {
 
         this.repository.saveDoneTask(doneTask);
 
-        return {task, doneTask};
+        return {
+            task,
+            doneTask,
+            message: this.feedbackGenerator.generate()
+        };
     }
 }
 
-export type {TaskRepository, Clock}
+export type {TaskRepository, TaskClock, TaskFeedbackGenerator}
 export type {Task, DoneTask}

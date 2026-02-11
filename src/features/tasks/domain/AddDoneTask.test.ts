@@ -1,5 +1,5 @@
 import {describe, it, expect, vi} from "vitest";
-import {AddDoneTaskAction, Clock, Task, TaskRepository} from "./AddDoneTask";
+import {AddDoneTaskAction, TaskClock, Task, TaskRepository, TaskFeedbackGenerator} from "./AddDoneTask";
 
 describe("AddDoneTask (domain)", () => {
 
@@ -9,10 +9,14 @@ describe("AddDoneTask (domain)", () => {
             saveTask: (task: any) => task,
             saveDoneTask: (doneTask: any) => doneTask,
         };
-        const fakeClock: Clock = {
+        const fakeClock: TaskClock = {
             now: () => new Date(),
-        }
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock);
+        };
+        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
+            generate: () => "Amazing!"
+        };
+
+        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
 
         const result = action.execute("I ran some errands", 1);
 
@@ -33,11 +37,16 @@ describe("AddDoneTask (domain)", () => {
             findTaskByLabel: vi.fn(() => task),
             saveTask: vi.fn((task: Task) => task),
             saveDoneTask: vi.fn((doneTask) => doneTask),
-        }
-        const fakeClock: Clock = {
+        };
+        const fakeClock: TaskClock = {
             now: () => new Date(),
-        }
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock);
+        };
+
+        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
+            generate: () => "Amazing!"
+        };
+
+        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
         const result = action.execute("I ran some errands", 1);
 
         expect(result.task.id).toBe(task.id);
@@ -53,10 +62,14 @@ describe("AddDoneTask (domain)", () => {
             saveTask: (task: any) => task,
             saveDoneTask: (doneTask: any) => doneTask,
         };
-        const fakeClock: Clock = {
+        const fakeClock: TaskClock = {
             now: () => new Date(),
-        }
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock);
+        };
+        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
+            generate: () => "Amazing!"
+        };
+
+        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
         expect(() => action.execute("", 1)).toThrow();
     });
 
@@ -64,7 +77,7 @@ describe("AddDoneTask (domain)", () => {
     it("uses injected Clock for doneAt", () => {
 
         const fixedDate = new Date(2025, 2, 10);
-        const fakeClock: Clock = {
+        const fakeClock: TaskClock = {
             now: () => fixedDate,
         }
 
@@ -74,9 +87,40 @@ describe("AddDoneTask (domain)", () => {
             saveDoneTask: (doneTask: any) => doneTask,
         };
 
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock);
+        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
+            generate: () => "Amazing!"
+        };
+
+        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
         const result = action.execute("I ran some errands", 1);
         expect(result.doneTask.doneAt).toBe(fixedDate);
+    });
+
+
+    it("returns a generated feedback message on success", () => {
+
+        const fakeClock = {
+            now: () => new Date(),
+        }
+
+        const fakeRepo: TaskRepository = {
+            findTaskByLabel: () => null,
+            saveTask: (task: any) => task,
+            saveDoneTask: (doneTask: any) => doneTask,
+        }
+
+        const fakeFeedback = {
+            generate: () => "Amazing!"
+        };
+
+        const action = new AddDoneTaskAction(
+            fakeRepo, fakeClock, fakeFeedback as any
+        );
+
+        const result = action.execute("I ran some errands", 1);
+        expect(result.message).toBe("Amazing!");
+
+
     });
 
 });

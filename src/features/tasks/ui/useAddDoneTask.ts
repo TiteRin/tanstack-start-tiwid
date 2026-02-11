@@ -11,8 +11,8 @@ export function useAddDoneTask(
     async function submit(task: string) {
 
         try {
-            action.execute(task, 1);
-            setMessage(feedback);
+            const result = action.execute(task, 1);
+            setMessage(result.message ?? feedback);
         } catch (e) {
             console.error(e);
             setMessage("Please enter a task label");
