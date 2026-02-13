@@ -1,6 +1,6 @@
 import {PrismaTaskRepository} from "@/features/tasks/infrastructure/PrismaTaskRepository.ts";
 import {GetUserDailySummary} from "@/features/tasks/domain/GetUserDailySummary.ts";
-import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTask.ts";
+import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTaskAction.ts";
 import {RandomFeedbackGenerator} from "@/features/tasks/infrastructure/RandomFeedbackGenerator.ts";
 
 const clock = {

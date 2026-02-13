@@ -5,7 +5,7 @@ import {Button} from "@/components/ui/Button.tsx";
 import clsx from "clsx";
 import {useAddDoneTask} from "@/features/tasks/ui/useAddDoneTask.ts";
 import {createAddDoneTaskAction} from "@/features/tasks/composition.ts";
-import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTask.ts";
+import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTaskAction.ts";
 
 type TaskFormProps = {
     action?: AddDoneTaskAction

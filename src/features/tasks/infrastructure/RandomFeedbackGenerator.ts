@@ -1,4 +1,4 @@
-import type {TaskFeedbackGenerator} from "@/features/tasks/domain/AddDoneTask.ts";
+import type {TaskFeedbackGenerator} from "@/features/tasks/domain/AddDoneTaskAction.ts";
 
 export class RandomFeedbackGenerator implements TaskFeedbackGenerator {
 

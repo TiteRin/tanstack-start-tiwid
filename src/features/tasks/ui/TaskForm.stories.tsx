@@ -1,7 +1,7 @@
 import {Meta, StoryObj} from "@storybook/react";
 import TaskForm from "./TaskForm";
 import {expect, userEvent, within} from "storybook/test";
-import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTask.ts";
+import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTaskAction.ts";
 
 const meta: Meta<typeof TaskForm> = {
     title: 'Feature/Tasks/TaskForm',

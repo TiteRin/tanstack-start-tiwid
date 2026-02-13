@@ -1,5 +1,5 @@
 import {describe, it, expect, vi} from "vitest";
-import {AddDoneTaskAction} from "./AddDoneTask";
+import {AddDoneTaskAction} from "./AddDoneTaskAction.ts";
 import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
 import {TaskClock} from "@/features/tasks/domain/ports/TaskClock.ts";
 import {TaskFeedbackGenerator} from "@/features/tasks/domain/ports/TaskFeedbackGenerator.ts";
