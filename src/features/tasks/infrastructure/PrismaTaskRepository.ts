@@ -1,11 +1,10 @@
 import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
-import {PrismaClient} from "@prisma/client";
 import {Task} from "@/features/tasks/domain/entities/Task.ts";
+import { prisma } from "@/server/prisma.server.ts";
 import {DoneTask} from "@/features/tasks/domain/entities/DoneTask.ts";
 
-const prisma = new PrismaClient();
-
 export class PrismaTaskRepository implements TaskRepository {
+
     async findTaskByLabel(label: string, userId: number): Promise<Task | null> {
         return prisma.task.findFirst({where: {label, userId}});
     }
