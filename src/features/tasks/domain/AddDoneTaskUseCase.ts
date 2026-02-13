@@ -5,8 +5,20 @@ import {TaskClock} from "./ports/TaskClock";
 import {TaskFeedbackGenerator} from "./ports/TaskFeedbackGenerator";
 import {Task} from "./entities/Task";
 import {DoneTask} from "./entities/DoneTask";
+import {UseCase} from "@/features/tasks/domain/UseCase.ts";
 
-export class AddDoneTaskUseCase {
+export type AddDoneTaskInput = {
+    label: string,
+    userId: number
+}
+
+export type AddDoneTaskResponse = {
+    task: Task,
+    doneTask: DoneTask,
+    message: string
+}
+
+export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTaskResponse> {
 
     constructor(
         private repository: TaskRepository,
@@ -15,8 +27,9 @@ export class AddDoneTaskUseCase {
     ) {
     }
 
-    async execute(label: string, userId: number) {
+    async execute(input: AddDoneTaskInput): Promise<AddDoneTaskResponse> {
 
+        const {label, userId} = input;
         const parsed = taskSchema.parse({label});
 
         let task: Task | null = await this.repository.findTaskByLabel(parsed.label, userId);

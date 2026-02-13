@@ -1,19 +1,21 @@
 import {describe, it, expect} from "vitest";
 import {GetUserDailySummaryUseCase} from "./GetUserDailySummaryUseCase.ts";
+import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
 
 describe("GetUserDailySummary", () => {
 
     it("returns today’s count when greater than zero", async () => {
-        const fakeRepo = {
-            countDoneTasksByDate: () => 3
-        };
+
+        const fakeRepository = {
+            countDoneTasksByDate: async () => 3
+        } as unknown as TaskRepository;
 
         const fakeClock = {
             now: () => new Date(2025, 2, 10)
-        };
+        }
 
-        const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
-        const result = await useCase.execute(1);
+        const useCase = new GetUserDailySummaryUseCase(fakeRepository, fakeClock);
+        const result = await useCase.execute({userId: 1});
 
         expect(result).toEqual({
             type: "today",
@@ -34,7 +36,7 @@ describe("GetUserDailySummary", () => {
             now: () => fakeNow
         }
         const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
-        const result = await useCase.execute(1);
+        const result = await useCase.execute({userId: 1});
 
         expect(result).toEqual({
             type: "yesterday",
@@ -54,7 +56,7 @@ describe("GetUserDailySummary", () => {
             now: () => fakeNow
         }
         const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
-        const result = await useCase.execute(1);
+        const result = await useCase.execute({userId: 1});
 
         expect(result).toEqual({
             type: "none",

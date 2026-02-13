@@ -24,7 +24,7 @@ describe("AddDoneTask (domain)", () => {
 
         const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
 
-        const result = await action.execute("I ran some errands", 1);
+        const result = await action.execute({label: "I ran some errands", userId: 1});
 
         expect(result.task.label).toBe("I ran some errands");
         expect(result.doneTask.taskId).toBe(result.task.id);
@@ -47,7 +47,7 @@ describe("AddDoneTask (domain)", () => {
         };
 
         const action = new AddDoneTaskUseCase(spyRepository, fakeClock, fakeFeedbackGenerator);
-        const result = await action.execute("I ran some errands", 1);
+        const result = await action.execute({label: "I ran some errands", userId: 1});
 
         expect(result.task.id).toBe(task.id);
         expect(spyRepository.findTaskByLabel).toHaveBeenCalledWith("I ran some errands", 1);
@@ -58,7 +58,7 @@ describe("AddDoneTask (domain)", () => {
     it("should fail when the label is empty", async () => {
 
         const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
-        await expect(() => action.execute("", 1)).rejects.toThrow();
+        await expect(() => action.execute({label: "", userId: 1})).rejects.toThrow();
     });
 
 
@@ -70,7 +70,7 @@ describe("AddDoneTask (domain)", () => {
         }
 
         const action = new AddDoneTaskUseCase(fakeRepository, injectedClock, fakeFeedbackGenerator);
-        const result = await action.execute("I ran some errands", 1);
+        const result = await action.execute({label: "I ran some errands", userId: 1});
         expect(result.doneTask.doneAt).toBe(fixedDate);
     });
 
@@ -85,7 +85,7 @@ describe("AddDoneTask (domain)", () => {
             fakeRepository, fakeClock, stubFeedback as any
         );
 
-        const result = await action.execute("I ran some errands", 1);
+        const result = await action.execute({label: "I ran some errands", userId: 1});
         expect(result.message).toBe("Amazing!");
     });
 
