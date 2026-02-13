@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {getUserDailySummaryServer} from "@/features/tasks/server/getUserDailySummary.functions.ts";
-import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummaryAction.ts";
+import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummaryUseCase.ts";
 
 export function useUserDailySummary() {
 

@@ -1,7 +1,7 @@
 import {Meta, StoryObj} from "@storybook/react";
 import UserDailySummary from "./UserDailySummary";
 import {expect, within} from "storybook/test";
-import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummaryAction.ts";
+import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummaryUseCase.ts";
 
 const meta: Meta = {
     title: 'Feature/Tasks/UserDailySummary',

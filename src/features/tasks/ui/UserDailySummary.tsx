@@ -1,4 +1,4 @@
-import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummaryAction.ts";
+import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummaryUseCase.ts";
 import {useUserDailySummary} from "@/features/tasks/ui/useUserDailySummary.ts";
 import {createGetUserDailySummary} from "@/features/tasks/composition.ts";
 

@@ -7,7 +7,7 @@ export interface GetUserDailySummaryPort {
     execute: (userId: number) => Promise<GetUserDailySummaryResponse>;
 }
 
-export class GetUserDailySummaryAction implements GetUserDailySummaryPort {
+export class GetUserDailySummaryUseCase implements GetUserDailySummaryPort {
 
     constructor(private repository: GetUserDailySummaryRepository, private clock: GetUserDailySummaryClock) {
     }

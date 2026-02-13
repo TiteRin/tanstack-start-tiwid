@@ -1,5 +1,5 @@
 import {describe, it, expect, vi} from "vitest";
-import {AddDoneTaskAction} from "./AddDoneTaskAction.ts";
+import {AddDoneTaskUseCase} from "./AddDoneTaskUseCase.ts";
 import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
 import {TaskClock} from "@/features/tasks/domain/ports/TaskClock.ts";
 import {TaskFeedbackGenerator} from "@/features/tasks/domain/ports/TaskFeedbackGenerator.ts";
@@ -22,7 +22,7 @@ describe("AddDoneTask (domain)", () => {
 
     it('creates an new task and a doneTask if task does not exist', async () => {
 
-        const action = new AddDoneTaskAction(fakeRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
 
         const result = await action.execute("I ran some errands", 1);
 
@@ -46,7 +46,7 @@ describe("AddDoneTask (domain)", () => {
             countDoneTasksByDate: vi.fn(async () => 0),
         };
 
-        const action = new AddDoneTaskAction(spyRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(spyRepository, fakeClock, fakeFeedbackGenerator);
         const result = await action.execute("I ran some errands", 1);
 
         expect(result.task.id).toBe(task.id);
@@ -57,7 +57,7 @@ describe("AddDoneTask (domain)", () => {
 
     it("should fail when the label is empty", async () => {
 
-        const action = new AddDoneTaskAction(fakeRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
         await expect(() => action.execute("", 1)).rejects.toThrow();
     });
 
@@ -69,7 +69,7 @@ describe("AddDoneTask (domain)", () => {
             now: () => fixedDate,
         }
 
-        const action = new AddDoneTaskAction(fakeRepository, injectedClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, injectedClock, fakeFeedbackGenerator);
         const result = await action.execute("I ran some errands", 1);
         expect(result.doneTask.doneAt).toBe(fixedDate);
     });
@@ -81,7 +81,7 @@ describe("AddDoneTask (domain)", () => {
             generate: () => "Amazing!"
         };
 
-        const action = new AddDoneTaskAction(
+        const action = new AddDoneTaskUseCase(
             fakeRepository, fakeClock, stubFeedback as any
         );
 

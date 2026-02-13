@@ -1,5 +1,5 @@
 import {describe, it, expect} from "vitest";
-import {GetUserDailySummaryAction} from "./GetUserDailySummaryAction.ts";
+import {GetUserDailySummaryUseCase} from "./GetUserDailySummaryUseCase.ts";
 
 describe("GetUserDailySummary", () => {
 
@@ -12,7 +12,7 @@ describe("GetUserDailySummary", () => {
             now: () => new Date(2025, 2, 10)
         };
 
-        const useCase = new GetUserDailySummaryAction(fakeRepo as any, fakeClock);
+        const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
         const result = await useCase.execute(1);
 
         expect(result).toEqual({
@@ -33,7 +33,7 @@ describe("GetUserDailySummary", () => {
         const fakeClock = {
             now: () => fakeNow
         }
-        const useCase = new GetUserDailySummaryAction(fakeRepo as any, fakeClock);
+        const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
         const result = await useCase.execute(1);
 
         expect(result).toEqual({
@@ -53,7 +53,7 @@ describe("GetUserDailySummary", () => {
         const fakeClock = {
             now: () => fakeNow
         }
-        const useCase = new GetUserDailySummaryAction(fakeRepo as any, fakeClock);
+        const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
         const result = await useCase.execute(1);
 
         expect(result).toEqual({

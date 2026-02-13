@@ -1,7 +1,7 @@
 import {Meta, StoryObj} from "@storybook/react";
 import TaskForm from "./TaskForm";
 import {expect, userEvent, within} from "storybook/test";
-import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTaskAction.ts";
+import {AddDoneTaskUseCase} from "@/features/tasks/domain/AddDoneTaskUseCase.ts";
 
 const meta: Meta<typeof TaskForm> = {
     title: 'Feature/Tasks/TaskForm',
@@ -29,7 +29,7 @@ export const HappyPath: Story = {
                     message: "A task has been added!"
                 }
             }
-        } as unknown as AddDoneTaskAction;
+        } as unknown as AddDoneTaskUseCase;
 
         return <TaskForm action={fakeAction}/>;
     },

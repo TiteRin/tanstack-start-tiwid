@@ -6,7 +6,7 @@ import {TaskFeedbackGenerator} from "./ports/TaskFeedbackGenerator";
 import {Task} from "./entities/Task";
 import {DoneTask} from "./entities/DoneTask";
 
-export class AddDoneTaskAction {
+export class AddDoneTaskUseCase {
 
     constructor(
         private repository: TaskRepository,
