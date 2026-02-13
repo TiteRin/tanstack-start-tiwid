@@ -1,13 +1,38 @@
-import {describe, it, expect, vi} from "vitest";
+import {describe, it, expect, vi, beforeEach} from "vitest";
 import {renderHook, act} from "@testing-library/react";
 import {useAddDoneTask} from "./useAddDoneTask";
-import {createAddDoneTaskAction} from "@/features/tasks/composition.ts";
+import {addDoneTaskServer} from "@/features/tasks/server/addDoneTask.functions";
+
+vi.mock(
+    "@/features/tasks/server/addDoneTask.functions.ts",
+    () => ({
+        addDoneTaskServer: vi.fn()
+    })
+);
+
 
 describe("useAddDoneTask - HOOK", () => {
 
+    beforeEach(() => {
+        vi.resetAllMocks();
+    });
+
     it("should set success message after submit", async () => {
-        const action = createAddDoneTaskAction();
-        const {result} = renderHook(() => useAddDoneTask(action));
+
+        (addDoneTaskServer as any).mockResolvedValue({
+            message: "Amazing!",
+            task: {
+                id: 1,
+                label: "I ran some errands",
+                userId: 1
+            },
+            doneTask: {
+                id: 2,
+                userId: 1,
+                taskId: 1,
+            }
+        });
+        const {result} = renderHook(() => useAddDoneTask());
 
         await act(async () => {
             await result.current.submit("I ran some errands");
@@ -17,8 +42,12 @@ describe("useAddDoneTask - HOOK", () => {
     });
 
     it("should set an error message when label is empty", async () => {
-        const action = createAddDoneTaskAction()
-        const {result} = renderHook(() => useAddDoneTask(action));
+
+        (addDoneTaskServer as any).mockRejectedValue(
+            new Error("Invalid input")
+        );
+
+        const {result} = renderHook(() => useAddDoneTask());
         await act(async () => {
             await result.current.submit("");
         });
@@ -28,16 +57,30 @@ describe("useAddDoneTask - HOOK", () => {
 
     it("calls injected action", async () => {
 
-        const executeMock = vi.fn();
-        const fakeAction = {
-            execute: executeMock
-        }
+        (addDoneTaskServer as any).mockResolvedValue({
+            message: "Amazing!",
+            task: {
+                id: 1,
+                label: "I ran some errands",
+                userId: 1
+            },
+            doneTask: {
+                id: 2,
+                userId: 1,
+                taskId: 1,
+            }
+        });
 
-        const {result} = renderHook(() => useAddDoneTask(fakeAction as any));
+        const {result} = renderHook(() => useAddDoneTask());
         await act(async () => {
             await result.current.submit("I ran some errands");
         });
 
-        expect(executeMock).toHaveBeenCalledWith("I ran some errands", 1);
+        expect(addDoneTaskServer).toHaveBeenCalledWith({
+            data: {
+                label: "I ran some errands",
+                userId: 1
+            }
+        });
     });
 });

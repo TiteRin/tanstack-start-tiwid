@@ -11,12 +11,12 @@ export async function getUserDailySummaryImpl(userId: number) {
 
     const repo = new PrismaTaskRepository();
     const useCase = new GetUserDailySummaryUseCase(repo, clock);
-    return useCase.execute(userId);
+    return useCase.execute({userId});
 }
 
 export async function addDoneTaskImpl(label: string, userId: number) {
 
     const repo = new PrismaTaskRepository();
     const action = new AddDoneTaskUseCase(repo, clock, new RandomFeedbackGenerator());
-    return action.execute(label, userId);
+    return action.execute({label, userId});
 }

@@ -3,7 +3,7 @@ import {addDoneTaskImpl} from "@/features/tasks/server/task.server.ts";
 import {z} from "zod";
 
 const AddDoneTaskInputSchema = z.object({
-    label: z.string(),
+    label: z.string().trim().min(1),
     userId: z.number()
 })
 

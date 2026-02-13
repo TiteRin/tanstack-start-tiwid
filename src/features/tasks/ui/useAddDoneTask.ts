@@ -14,8 +14,7 @@ export function useAddDoneTask() {
             const result = await addDoneTaskServer({data: {label: task, userId: 1}});
             setMessage(result.message);
             setStatus("success");
-        } catch
-            (e) {
+        } catch (e) {
             console.error(e);
             setMessage("Please enter a task label");
             setStatus("error");
