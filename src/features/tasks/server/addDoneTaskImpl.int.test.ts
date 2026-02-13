@@ -1,23 +1,25 @@
 // @vitest-environment node
 import {describe, it, expect, beforeEach, afterAll} from "vitest";
-import {PrismaClient} from "@prisma/client";
 import {addDoneTaskImpl} from "@/features/tasks/server/task.server.ts";
-
-const prisma = new PrismaClient();
+import {prisma} from "@/server/prisma.server.ts";
 
 describe("addDoneTaskImpl - Integration Test", () => {
+
+    let userId: number;
 
     beforeEach(async () => {
         await prisma.doneTask.deleteMany();
         await prisma.task.deleteMany();
         await prisma.user.deleteMany();
 
-        await prisma.user.create({
+        const user = await prisma.user.create({
             data: {
                 name: "Test",
                 email: "test@user.test"
             }
-        })
+        });
+
+        userId = user.id;
     });
 
     afterAll(async () => {
@@ -25,7 +27,7 @@ describe("addDoneTaskImpl - Integration Test", () => {
     });
 
     it("creates a task and a doneTask in the database", async () => {
-        const result = await addDoneTaskImpl("I ran some errands", 1);
+        const result = await addDoneTaskImpl("I ran some errands", userId);
 
         expect(result.task.label).toBe("I ran some errands");
         expect(result.message).toBeDefined();
