@@ -1,22 +1,28 @@
 import {describe, it, expect, vi} from "vitest";
-import {AddDoneTaskAction, TaskClock, Task, TaskRepository, TaskFeedbackGenerator} from "./AddDoneTask";
+import {AddDoneTaskAction} from "./AddDoneTask";
+import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
+import {TaskClock} from "@/features/tasks/domain/ports/TaskClock.ts";
+import {TaskFeedbackGenerator} from "@/features/tasks/domain/ports/TaskFeedbackGenerator.ts";
+import {Task} from "@/features/tasks/domain/entities/Task.ts";
 
 describe("AddDoneTask (domain)", () => {
 
-    it('creates an new task and a doneTask if task does not exist', async () => {
-        const fakeRepo: TaskRepository = {
-            findTaskByLabel: () => null,
-            saveTask: (task: any) => task,
-            saveDoneTask: (doneTask: any) => doneTask,
-        };
-        const fakeClock: TaskClock = {
-            now: () => new Date(),
-        };
-        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
-            generate: () => "Amazing!"
-        };
+    const fakeRepository: TaskRepository = {
+        findTaskByLabel: async () => null,
+        saveTask: async (task: any) => task,
+        saveDoneTask: async (doneTask: any) => doneTask,
+        countDoneTasksByDate: async () => 0
+    }
+    const fakeClock: TaskClock = {
+        now: () => new Date(),
+    };
+    const fakeFeedbackGenerator: TaskFeedbackGenerator = {
+        generate: () => "Amazing!"
+    };
 
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
+    it('creates an new task and a doneTask if task does not exist', async () => {
+
+        const action = new AddDoneTaskAction(fakeRepository, fakeClock, fakeFeedbackGenerator);
 
         const result = await action.execute("I ran some errands", 1);
 
@@ -27,49 +33,31 @@ describe("AddDoneTask (domain)", () => {
     it('does not create a new task if task already exists', async () => {
 
         const task: Task = {
-            id: "task-1",
+            id: 1,
             label: "I ran some errands",
             userId: 1,
         }
 
 
-        const fakeRepo: TaskRepository = {
-            findTaskByLabel: vi.fn(() => task),
-            saveTask: vi.fn((task: Task) => task),
-            saveDoneTask: vi.fn((doneTask) => doneTask),
-        };
-        const fakeClock: TaskClock = {
-            now: () => new Date(),
+        const spyRepository: TaskRepository = {
+            findTaskByLabel: vi.fn(async () => task),
+            saveTask: vi.fn(async (task: Task) => task),
+            saveDoneTask: vi.fn(async (doneTask) => doneTask),
+            countDoneTasksByDate: vi.fn(async () => 0),
         };
 
-        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
-            generate: () => "Amazing!"
-        };
-
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskAction(spyRepository, fakeClock, fakeFeedbackGenerator);
         const result = await action.execute("I ran some errands", 1);
 
         expect(result.task.id).toBe(task.id);
-        expect(fakeRepo.findTaskByLabel).toHaveBeenCalledWith("I ran some errands");
-        expect(fakeRepo.saveTask).not.toHaveBeenCalled();
-        expect(fakeRepo.saveDoneTask).toHaveBeenCalled();
+        expect(spyRepository.findTaskByLabel).toHaveBeenCalledWith("I ran some errands", 1);
+        expect(spyRepository.saveTask).not.toHaveBeenCalled();
+        expect(spyRepository.saveDoneTask).toHaveBeenCalled();
     });
 
     it("should fail when the label is empty", async () => {
 
-        const fakeRepo: TaskRepository = {
-            findTaskByLabel: () => null,
-            saveTask: (task: any) => task,
-            saveDoneTask: (doneTask: any) => doneTask,
-        };
-        const fakeClock: TaskClock = {
-            now: () => new Date(),
-        };
-        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
-            generate: () => "Amazing!"
-        };
-
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskAction(fakeRepository, fakeClock, fakeFeedbackGenerator);
         await expect(() => action.execute("", 1)).rejects.toThrow();
     });
 
@@ -77,21 +65,11 @@ describe("AddDoneTask (domain)", () => {
     it("uses injected Clock for doneAt", async () => {
 
         const fixedDate = new Date(2025, 2, 10);
-        const fakeClock: TaskClock = {
+        const injectedClock: TaskClock = {
             now: () => fixedDate,
         }
 
-        const fakeRepo: TaskRepository = {
-            findTaskByLabel: () => null,
-            saveTask: (task: any) => task,
-            saveDoneTask: (doneTask: any) => doneTask,
-        };
-
-        const fakeFeedbackGenerator: TaskFeedbackGenerator = {
-            generate: () => "Amazing!"
-        };
-
-        const action = new AddDoneTaskAction(fakeRepo, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskAction(fakeRepository, injectedClock, fakeFeedbackGenerator);
         const result = await action.execute("I ran some errands", 1);
         expect(result.doneTask.doneAt).toBe(fixedDate);
     });
@@ -99,28 +77,16 @@ describe("AddDoneTask (domain)", () => {
 
     it("returns a generated feedback message on success", async () => {
 
-        const fakeClock = {
-            now: () => new Date(),
-        }
-
-        const fakeRepo: TaskRepository = {
-            findTaskByLabel: () => null,
-            saveTask: (task: any) => task,
-            saveDoneTask: (doneTask: any) => doneTask,
-        }
-
-        const fakeFeedback = {
+        const stubFeedback = {
             generate: () => "Amazing!"
         };
 
         const action = new AddDoneTaskAction(
-            fakeRepo, fakeClock, fakeFeedback as any
+            fakeRepository, fakeClock, stubFeedback as any
         );
 
         const result = await action.execute("I ran some errands", 1);
         expect(result.message).toBe("Amazing!");
-
-
     });
 
 });

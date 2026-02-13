@@ -6,17 +6,21 @@ export class InMemoryTaskRepository implements TaskRepository {
     private tasks: Task[] = [];
     private doneTasks: DoneTask[] = [];
 
-    findTaskByLabel(label: string): Task | null {
-        return this.tasks.find(task => task.label === label) ?? null
+    async findTaskByLabel(label: string, userId: number): Promise<Task | null> {
+        return this.tasks.find(task => task.label === label && task.userId === userId) ?? null
     }
 
-    saveTask(task: Task) {
+    async saveTask(task: Task) {
         this.tasks.push(task);
         return task;
     }
 
-    saveDoneTask(doneTask: DoneTask) {
+    async saveDoneTask(doneTask: DoneTask) {
         this.doneTasks.push(doneTask);
         return doneTask;
+    }
+
+    async countDoneTasksByDate(_userId: number, _date: Date): Promise<number> {
+        return 0;
     }
 }

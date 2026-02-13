@@ -1,10 +1,8 @@
 import {useState} from "react";
-import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTask.ts";
 import {TaskActionStatus} from "@/features/tasks/ui/taskAction.types.ts";
+import {addDoneTaskServer} from "@/features/tasks/server/addDoneTask.functions.ts";
 
-export function useAddDoneTask(
-    action: AddDoneTaskAction
-) {
+export function useAddDoneTask() {
     const [message, setMessage] = useState<string>("");
     const [status, setStatus] = useState<TaskActionStatus>("idle");
 
@@ -13,10 +11,11 @@ export function useAddDoneTask(
         setStatus("submitting");
 
         try {
-            const result = await action.execute(task, 1);
+            const result = await addDoneTaskServer({data: {label: task, userId: 1}});
             setMessage(result.message);
             setStatus("success");
-        } catch (e) {
+        } catch
+            (e) {
             console.error(e);
             setMessage("Please enter a task label");
             setStatus("error");

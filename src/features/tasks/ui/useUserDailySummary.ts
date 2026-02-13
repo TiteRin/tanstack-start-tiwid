@@ -1,18 +1,14 @@
 import {useEffect, useState} from "react";
-import {GetUserDailySummaryPort} from "@/features/tasks/domain/GetUserDailySummary.ts";
+import {getUserDailySummaryServer} from "@/features/tasks/server/getUserDailySummary.functions.ts";
+import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummary.ts";
 
-type Summary = |
-    { type: "today", count: number } |
-    { type: "yesterday", count: number } |
-    { type: "none", count: 0 }
-
-export function useUserDailySummary(useCase: GetUserDailySummaryPort) {
+export function useUserDailySummary() {
 
     const [summary, setSummary] = useState<string>("");
 
     useEffect(() => {
         async function load() {
-            const result: Summary = await useCase.execute(1) as Summary;
+            const result: GetUserDailySummaryResponse = await getUserDailySummaryServer({data: {userId: 1}});
 
             if (result.type === "today") {
                 setSummary(`You’ve already done ${result.count} tasks today!`);
@@ -25,7 +21,7 @@ export function useUserDailySummary(useCase: GetUserDailySummaryPort) {
         }
 
         load();
-    }, [useCase])
+    }, [])
 
     return {summary};
 }

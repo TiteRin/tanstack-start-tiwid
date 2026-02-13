@@ -19,7 +19,7 @@ export class AddDoneTaskAction {
 
         const parsed = taskSchema.parse({label});
 
-        let task: Task | null = this.repository.findTaskByLabel(parsed.label);
+        let task: Task | null = await this.repository.findTaskByLabel(parsed.label, userId);
 
         if (!task) {
 
@@ -28,7 +28,7 @@ export class AddDoneTaskAction {
                 userId
             } as Task;
 
-            task = this.repository.saveTask(task);
+            task = await this.repository.saveTask(task);
         }
 
         const doneTask = {
@@ -37,7 +37,7 @@ export class AddDoneTaskAction {
             doneAt: this.clock.now()
         } as DoneTask;
 
-        this.repository.saveDoneTask(doneTask);
+        await this.repository.saveDoneTask(doneTask);
 
         return {
             task,

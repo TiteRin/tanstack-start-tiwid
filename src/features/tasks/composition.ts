@@ -1,7 +1,7 @@
 import {AddDoneTaskAction} from "@/features/tasks/domain/AddDoneTask.ts";
-import {InMemoryTaskRepository} from "@/features/tasks/infrastructure/InMemoryTaskRepository.ts";
 import {RandomFeedbackGenerator} from "@/features/tasks/infrastructure/RandomFeedbackGenerator.ts";
-import {GetUserDailySummary, GetUserDailySummaryRepository} from "@/features/tasks/domain/GetUserDailySummary.ts";
+import {GetUserDailySummary} from "@/features/tasks/domain/GetUserDailySummary.ts";
+import {PrismaTaskRepository} from "@/features/tasks/infrastructure/PrismaTaskRepository.ts";
 
 const clock = {
     now: () => new Date(),
@@ -10,7 +10,7 @@ const clock = {
 
 export function createAddDoneTaskAction() {
     return new AddDoneTaskAction(
-        new InMemoryTaskRepository() as any,
+        new PrismaTaskRepository(),
         clock,
         new RandomFeedbackGenerator()
     );
@@ -21,7 +21,7 @@ export function createGetUserDailySummary() {
     const clock = {now: () => new Date()};
 
     return new GetUserDailySummary(
-        new InMemoryTaskRepository() as unknown as GetUserDailySummaryRepository,
+        new PrismaTaskRepository(),
         clock
     );
 }
