@@ -38,4 +38,20 @@ describe("addDoneTaskImpl - Integration Test", () => {
         expect(tasks.length).toBe(1)
         expect(doneTasks.length).toBe(1);
     });
+
+    it("does not create a task if it already exists", async () => {
+
+        await addDoneTaskImpl("I ran some errands", userId);
+        await addDoneTaskImpl("I ran some errands", userId);
+
+        const tasks = await prisma.task.findMany();
+        const doneTasks = await prisma.doneTask.findMany();
+
+        expect(tasks.length).toBe(1);
+        expect(doneTasks.length).toBe(2);
+    });
+
+    it("throws an error if label is empty", async () => {
+        await expect(addDoneTaskImpl("", userId)).rejects.toThrow();
+    });
 })
