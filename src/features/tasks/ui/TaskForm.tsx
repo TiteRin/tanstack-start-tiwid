@@ -4,18 +4,12 @@ import {Input} from "@/components/ui/Input.tsx";
 import {Button} from "@/components/ui/Button.tsx";
 import clsx from "clsx";
 import {useAddDoneTask} from "@/features/tasks/ui/useAddDoneTask.ts";
-import {createAddDoneTaskAction} from "@/features/tasks/composition.ts";
-import {AddDoneTaskUseCase} from "@/features/tasks/domain/AddDoneTaskUseCase.ts";
 
-type TaskFormProps = {
-    action?: AddDoneTaskUseCase
-}
 
-export default function TaskForm({action}: TaskFormProps) {
+export default function TaskForm() {
 
     const [task, setTask] = useState<string>("");
-    const resolvedAction = action ?? createAddDoneTaskAction();
-    const {submit, message, status} = useAddDoneTask(resolvedAction);
+    const {submit, message, status} = useAddDoneTask();
 
     return (
         <form onSubmit={(e) => {
