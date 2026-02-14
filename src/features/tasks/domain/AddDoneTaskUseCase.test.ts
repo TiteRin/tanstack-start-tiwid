@@ -4,6 +4,7 @@ import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
 import {TaskClock} from "@/features/tasks/domain/ports/TaskClock.ts";
 import {TaskFeedbackGenerator} from "@/features/tasks/domain/ports/TaskFeedbackGenerator.ts";
 import {Task} from "@/features/tasks/domain/entities/Task.ts";
+import {DoneTask} from "@/features/tasks/domain/entities/DoneTask.ts";
 
 describe("AddDoneTask (domain)", () => {
 
@@ -88,5 +89,35 @@ describe("AddDoneTask (domain)", () => {
         const result = await action.execute({label: "I ran some errands", userId: "user-1"});
         expect(result.message).toBe("Amazing!");
     });
+
+    it("returns the updated daily count on success", async () => {
+
+        const today = new Date(2025, 2, 10);
+        const stubClock = {
+            now: () => today
+        }
+
+        let doneTasks: DoneTask[] = [];
+
+        const mockRepository = {
+            findTaskByLabel: async () => null,
+            saveTask: async (task: Task) => task,
+            saveDoneTask: async (doneTask: DoneTask) => {
+                doneTasks.push(doneTask);
+                return doneTask;
+            },
+            countDoneTasksByDate: async (_userId: string, date: Date) => (
+                doneTasks.filter(doneTask => doneTask.doneAt.toDateString() === date.toDateString()).length
+            )
+        }
+
+        const action = new AddDoneTaskUseCase(
+            mockRepository, stubClock as any, {generate: () => "Amazing!"}
+        );
+        const result1 = await action.execute({label: "I ran some errands", userId: "user-1"});
+        expect(result1.dailyDoneCount).toBe(1);
+        const result2 = await action.execute({label: "I did my workout", userId: "user-1"});
+        expect(result2.dailyDoneCount).toBe(2);
+    })
 
 });

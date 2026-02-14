@@ -15,7 +15,8 @@ export type AddDoneTaskInput = {
 export type AddDoneTaskResponse = {
     task: Task,
     doneTask: DoneTask,
-    message: string
+    message: string,
+    dailyDoneCount: number
 }
 
 export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTaskResponse> {
@@ -31,6 +32,7 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
 
         const {label, userId} = input;
         const parsed = taskSchema.parse({label});
+        const now = this.clock.now();
 
         let task: Task | null = await this.repository.findTaskByLabel(parsed.label, userId);
 
@@ -47,7 +49,7 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
         const doneTask = {
             userId,
             taskId: task.id,
-            doneAt: this.clock.now()
+            doneAt: now
         } as DoneTask;
 
         await this.repository.saveDoneTask(doneTask);
@@ -55,7 +57,8 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
         return {
             task,
             doneTask,
-            message: this.feedbackGenerator.generate()
+            message: this.feedbackGenerator.generate(),
+            dailyDoneCount: await this.repository.countDoneTasksByDate(userId, now)
         };
     }
 }
