@@ -1,14 +1,13 @@
 import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "./db";
-import * as schema from "./schema";
+import {prismaAdapter} from "@better-auth/prisma-adapter";
+import { prisma } from "@/server/prisma.server.ts"
+
 
 export const auth = betterAuth({
     baseURL: process.env.APP_URL || "http://localhost:3000",
     secret: process.env.BETTER_AUTH_SECRET,
-    database: drizzleAdapter(db, {
-        provider: "sqlite",
-        schema: schema,
+    database: prismaAdapter(prisma, {
+        provider: "sqlite"
     }),
     emailAndPassword: {
         enabled: true
