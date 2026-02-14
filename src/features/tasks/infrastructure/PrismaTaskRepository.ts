@@ -5,7 +5,7 @@ import {DoneTask} from "@/features/tasks/domain/entities/DoneTask.ts";
 
 export class PrismaTaskRepository implements TaskRepository {
 
-    async findTaskByLabel(label: string, userId: number): Promise<Task | null> {
+    async findTaskByLabel(label: string, userId: string): Promise<Task | null> {
         return prisma.task.findFirst({where: {label, userId}});
     }
 
@@ -28,7 +28,7 @@ export class PrismaTaskRepository implements TaskRepository {
         });
     }
 
-    async countDoneTasksByDate(userId: number, date: Date): Promise<number> {
+    async countDoneTasksByDate(userId: string, date: Date): Promise<number> {
 
         const start = new Date(date);
         start.setHours(0, 0, 0, 0);

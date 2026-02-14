@@ -1,17 +1,8 @@
-import {GetUserDailySummaryResponse} from "@/features/tasks/domain/GetUserDailySummaryUseCase.ts";
 import {useUserDailySummary} from "@/features/tasks/ui/useUserDailySummary.ts";
-import {createGetUserDailySummary} from "@/features/tasks/composition.ts";
 
-interface UserDailySummaryProps {
-    action?: {
-        execute: () => Promise<GetUserDailySummaryResponse>
-    }
-}
+export default function UserDailySummary() {
 
-export default function UserDailySummary({action}: UserDailySummaryProps) {
-
-    const resolvedAction = action ?? createGetUserDailySummary();
-    const {summary} = useUserDailySummary(resolvedAction);
+    const {summary} = useUserDailySummary();
 
     if (!summary) return;
 

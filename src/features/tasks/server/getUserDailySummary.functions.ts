@@ -1,13 +1,13 @@
 import {createServerFn} from "@tanstack/react-start";
 import {getUserDailySummaryImpl} from "@/features/tasks/server/task.server.ts";
-import {z} from "zod";
-
-const GetUserDailySummaryInputSchema = z.object({
-    userId: z.number()
-})
+import {getRequest} from "@tanstack/react-start/server";
+import {requireUser} from "@/server/requireUser.ts";
 
 export const getUserDailySummaryServer = createServerFn()
-    .inputValidator(GetUserDailySummaryInputSchema)
-    .handler(async ({data}) => {
-        return getUserDailySummaryImpl(data.userId)
+    .handler(async ({}) => {
+
+        const request = getRequest();
+        const userId = await requireUser(request.headers);
+
+        return getUserDailySummaryImpl(userId)
     });

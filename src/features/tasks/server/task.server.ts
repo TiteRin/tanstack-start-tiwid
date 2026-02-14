@@ -7,14 +7,14 @@ const clock = {
     now: () => new Date(),
 }
 
-export async function getUserDailySummaryImpl(userId: number) {
+export async function getUserDailySummaryImpl(userId: string) {
 
     const repo = new PrismaTaskRepository();
     const useCase = new GetUserDailySummaryUseCase(repo, clock);
     return useCase.execute({userId});
 }
 
-export async function addDoneTaskImpl(label: string, userId: number) {
+export async function addDoneTaskImpl(label: string, userId: string) {
 
     const repo = new PrismaTaskRepository();
     const action = new AddDoneTaskUseCase(repo, clock, new RandomFeedbackGenerator());

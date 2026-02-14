@@ -9,7 +9,7 @@ import {UseCase} from "@/features/tasks/domain/UseCase.ts";
 
 export type AddDoneTaskInput = {
     label: string,
-    userId: number
+    userId: string
 }
 
 export type AddDoneTaskResponse = {

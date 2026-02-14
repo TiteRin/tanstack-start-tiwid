@@ -13,7 +13,7 @@ export function useAddDoneTask(serverFn: AddDoneTaskServer = addDoneTaskServer) 
         setStatus("submitting");
 
         try {
-            const result = await serverFn({data: {label: task, userId: 1}});
+            const result = await serverFn({data: {label: task}});
             setMessage(result.message);
             setStatus("success");
         } catch (e) {

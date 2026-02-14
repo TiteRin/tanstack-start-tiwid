@@ -2,11 +2,11 @@ import {UseCase} from "@/features/tasks/domain/UseCase.ts";
 
 type GetUserDailySummaryType = "today" | "yesterday" | "none";
 type GetUserDailySummaryResponse = { type: GetUserDailySummaryType, count: number };
-type GetUserDailySummaryRepository = { countDoneTasksByDate: (userId: number, date: Date) => Promise<number> };
+type GetUserDailySummaryRepository = { countDoneTasksByDate: (userId: string, date: Date) => Promise<number> };
 type GetUserDailySummaryClock = { now: () => Date };
 
 export type GetUserDailySummaryInput = {
-    userId: number
+    userId: string
 };
 
 export class GetUserDailySummaryUseCase implements UseCase<GetUserDailySummaryInput, GetUserDailySummaryResponse> {

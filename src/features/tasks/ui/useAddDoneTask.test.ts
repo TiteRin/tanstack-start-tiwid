@@ -79,7 +79,6 @@ describe("useAddDoneTask - HOOK", () => {
         expect(addDoneTaskServer).toHaveBeenCalledWith({
             data: {
                 label: "I ran some errands",
-                userId: 1
             }
         });
     });
