@@ -1,6 +1,5 @@
-import {createFileRoute, Link} from '@tanstack/react-router'
+import {createFileRoute, Link, useNavigate} from '@tanstack/react-router'
 import {useSession} from '../lib/auth-client'
-import HomePageWrapper from "@/features/home/ui/HomePageWrapper.tsx";
 
 export const Route = createFileRoute('/')({
     component: App,
@@ -30,16 +29,15 @@ function GuestWelcomeComponent() {
 
 function App() {
     const {data: session, isPending} = useSession()
+    const navigate = useNavigate()
 
     if (isPending) {
         return <div>Chargement...</div>
     }
 
     if (session) {
-        return (
-            <HomePageWrapper />
-        )
+        return navigate({to: "/app"});
     }
 
-    return <GuestWelcomeComponent />
+    return <GuestWelcomeComponent/>
 }
