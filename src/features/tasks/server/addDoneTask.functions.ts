@@ -10,5 +10,5 @@ const AddDoneTaskInputSchema = z.object({
 export const addDoneTaskServer = createServerFn({method: 'POST'})
     .inputValidator(AddDoneTaskInputSchema)
     .handler(async ({data}) => {
-        return addDoneTaskImpl(data.label, data.userId)
+        return await addDoneTaskImpl(data.label, data.userId)
     })

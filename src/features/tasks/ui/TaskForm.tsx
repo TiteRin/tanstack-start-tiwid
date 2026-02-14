@@ -4,12 +4,16 @@ import {Input} from "@/components/ui/Input.tsx";
 import {Button} from "@/components/ui/Button.tsx";
 import clsx from "clsx";
 import {useAddDoneTask} from "@/features/tasks/ui/useAddDoneTask.ts";
+import {addDoneTaskServer} from "@/features/tasks/server/addDoneTask.functions.ts";
 
+type TaskFormProps = {
+    addDoneTask?: typeof addDoneTaskServer
+}
 
-export default function TaskForm() {
+export default function TaskForm({addDoneTask}: TaskFormProps) {
 
     const [task, setTask] = useState<string>("");
-    const {submit, message, status} = useAddDoneTask();
+    const {submit, message, status} = useAddDoneTask(addDoneTask);
 
     return (
         <form onSubmit={(e) => {
@@ -45,7 +49,8 @@ export default function TaskForm() {
                 {
                     status === "submitting" && (
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
-                             stroke="currentColor" className="size-6 inline-block align-bottom" data-testid="submitting-icon">
+                             stroke="currentColor" className="size-6 inline-block align-bottom"
+                             data-testid="submitting-icon">
                             <path strokeLinecap="round" strokeLinejoin="round"
                                   d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
                         </svg>
