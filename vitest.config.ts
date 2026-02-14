@@ -18,15 +18,15 @@ export default defineConfig({
             {
                 extends: true,
                 test: {
-                    include: ['src/**/*.test.ts'],
-                    exclude: ['src/**/*.int.test.ts'],
+                    include: ['src/**/*.test.{ts,tsx}'],
+                    exclude: ['src/**/*.int.test.{ts,tsx}'],
                     name: 'unit',
                 }
             },
             {
                 extends: true,
                 test: {
-                    include: ['src/**/*.int.test.ts'],
+                    include: ['src/**/*.int.test.{ts,tsx}'],
                     environment: 'node',
                     name: 'integration',
                     pool: "forks",
