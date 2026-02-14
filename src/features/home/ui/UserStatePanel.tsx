@@ -2,13 +2,13 @@ import clsx from "clsx";
 
 type UserStatePanelProps = {
     praise?: string,
-    dailySummary?: string,
-    totalTasks: number
+    countTotalTasks: number,
+    countDoneTasksToday: number
 }
 
 export default function UserStatePanel(
     {
-        praise, dailySummary, totalTasks
+        praise, countTotalTasks, countDoneTasksToday
     }: UserStatePanelProps
 ) {
     return (
@@ -19,13 +19,13 @@ export default function UserStatePanel(
                 </div>
             }
 
-            {dailySummary &&
-                <p className={clsx("text-(--accent)")}>{dailySummary}</p>
+            {countDoneTasksToday > 0 &&
+                <p className={clsx("text-(--accent)")}>You’ve done {countDoneTasksToday} tasks today!</p>
             }
 
-            {totalTasks > 0 &&
+            {countTotalTasks > 0 &&
                 <p className={clsx("text-(--secondary) text-sm")}>
-                    Total tasks in your forever Done List: {totalTasks}
+                    Total tasks in your forever Done List: {countTotalTasks}
                 </p>
             }
         </section>

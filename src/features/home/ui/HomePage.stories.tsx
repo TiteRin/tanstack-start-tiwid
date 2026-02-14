@@ -14,6 +14,6 @@ export const LoggedIn: Story = {
         user: { id: "user-1", name: "Alice" },
         praise: "Amazing!",
         dailySummary: "You’ve already done 3 tasks today!",
-        totalTasks: 12,
+        countTotalTasks: 12,
     },
 };

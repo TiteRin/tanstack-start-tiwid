@@ -7,8 +7,8 @@ describe("UserStatePanel", () => {
 
     const props = {
         praise: "Great job!",
-        dailySummary: "3 tasks completed today",
-        totalTasks: 15
+        countTotalTasks: 15,
+        countDoneTasksToday: 3
     }
 
     it("displays praise message", () => {
@@ -18,7 +18,7 @@ describe("UserStatePanel", () => {
 
     it("displays daily summary", () => {
         render(<UserStatePanel  {...props} />)
-        expect(screen.getByText("3 tasks completed today")).toBeInTheDocument();
+        expect(screen.getByText("You’ve done 3 tasks today!")).toBeInTheDocument();
     });
 
     it("displays total tasks count", () => {

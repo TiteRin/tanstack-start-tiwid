@@ -9,16 +9,16 @@ export type HomePageProps = {
         name: string
     },
     praise: string,
-    dailySummary: string,
-    totalTasks: number
+    countTotalTasks: number,
+    countDoneTasksToday: number
 }
 
 export default function HomePage(
     {
         user,
         praise,
-        dailySummary,
-        totalTasks
+        countTotalTasks,
+        countDoneTasksToday
     }: HomePageProps) {
     return (
         <div className={clsx("min-h-screen px-6 py-12 space-y-10")}>
@@ -26,7 +26,9 @@ export default function HomePage(
             <div className="bg-(--surface) rounded-lg shadow-md p-6">
                 <TaskForm/>
             </div>
-            <UserStatePanel praise={praise} dailySummary={dailySummary} totalTasks={totalTasks}/>
+            <UserStatePanel praise={praise}
+                            countTotalTasks={countTotalTasks}
+                            countDoneTasksToday={countDoneTasksToday}/>
         </div>
     )
         ;
