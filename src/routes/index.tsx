@@ -1,37 +1,12 @@
 import {createFileRoute, Link} from '@tanstack/react-router'
 import {useSession} from '../lib/auth-client'
-import {getRequest} from "@tanstack/react-start/server";
-import {requireUser} from "@/server/requireUser.ts";
-import {PrismaHomeRepository} from "@/features/home/infrastructure/PrismaHomeRepository.ts";
-import {getHomePageData} from "@/features/home/server/getHomePageData.ts";
-import HomePage from "@/features/home/ui/HomePage.tsx";
+import HomePageWrapper from "@/features/home/ui/HomePageWrapper.tsx";
 
 export const Route = createFileRoute('/')({
-    loader: async () => {
-        const request = getRequest();
-        const userId = await requireUser(request.headers);
-
-        const repository = new PrismaHomeRepository();
-        return await getHomePageData(userId, repository);
-    },
     component: App,
 })
 
-function App() {
-    const {data: session, isPending} = useSession()
-    // const navigate = useNavigate()
-
-    if (isPending) {
-        return <div>Chargement...</div>
-    }
-
-    if (session) {
-        const data = Route.useLoaderData();
-        return (
-            <HomePage {...data} praise={""}/>
-        )
-    }
-
+function GuestWelcomeComponent() {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen space-y-6">
             <h1 className="text-4xl font-bold">Welcome</h1>
@@ -51,4 +26,20 @@ function App() {
             </div>
         </div>
     )
+}
+
+function App() {
+    const {data: session, isPending} = useSession()
+
+    if (isPending) {
+        return <div>Chargement...</div>
+    }
+
+    if (session) {
+        return (
+            <HomePageWrapper />
+        )
+    }
+
+    return <GuestWelcomeComponent />
 }
