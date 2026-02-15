@@ -2,7 +2,6 @@ import {taskSchema} from "@/features/tasks/domain/TaskSchema.ts";
 
 import {TaskRepository} from "./ports/TaskRepository";
 import {TaskClock} from "./ports/TaskClock";
-import {TaskFeedbackGenerator} from "./ports/TaskFeedbackGenerator";
 import {Task} from "./entities/Task";
 import {DoneTask} from "./entities/DoneTask";
 import {UseCase} from "@/features/tasks/domain/UseCase.ts";
@@ -15,15 +14,15 @@ export type AddDoneTaskInput = {
 export type AddDoneTaskResponse = {
     task: Task,
     doneTask: DoneTask,
-    message: string
+    dailyDoneCount: number,
+    totalTasksCount: number
 }
 
 export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTaskResponse> {
 
     constructor(
         private repository: TaskRepository,
-        private clock: TaskClock,
-        private feedbackGenerator: TaskFeedbackGenerator
+        private clock: TaskClock
     ) {
     }
 
@@ -31,6 +30,7 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
 
         const {label, userId} = input;
         const parsed = taskSchema.parse({label});
+        const now = this.clock.now();
 
         let task: Task | null = await this.repository.findTaskByLabel(parsed.label, userId);
 
@@ -47,7 +47,7 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
         const doneTask = {
             userId,
             taskId: task.id,
-            doneAt: this.clock.now()
+            doneAt: now
         } as DoneTask;
 
         await this.repository.saveDoneTask(doneTask);
@@ -55,7 +55,8 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
         return {
             task,
             doneTask,
-            message: this.feedbackGenerator.generate()
+            dailyDoneCount: await this.repository.countDoneTasksByDate(userId, now),
+            totalTasksCount: await this.repository.countTasksByUser(userId)
         };
     }
 }

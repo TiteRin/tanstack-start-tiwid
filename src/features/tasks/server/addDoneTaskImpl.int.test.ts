@@ -5,7 +5,7 @@ import {prisma} from "@/server/prisma.server.ts";
 
 describe("addDoneTaskImpl - Integration Test", () => {
 
-    let userId: number;
+    let userId: string;
 
     beforeEach(async () => {
         await prisma.doneTask.deleteMany();
@@ -30,7 +30,6 @@ describe("addDoneTaskImpl - Integration Test", () => {
         const result = await addDoneTaskImpl("I ran some errands", userId);
 
         expect(result.task.label).toBe("I ran some errands");
-        expect(result.message).toBeDefined();
 
         const tasks = await prisma.task.findMany();
         const doneTasks = await prisma.doneTask.findMany();

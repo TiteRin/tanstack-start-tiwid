@@ -15,6 +15,5 @@ export const addDoneTaskServer = createServerFn({method: 'POST'})
         const request = getRequest();
         const userId = await requireUser(request.headers);
 
-
         return await addDoneTaskImpl(data.label, userId)
     })

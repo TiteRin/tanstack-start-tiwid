@@ -6,7 +6,7 @@ export class InMemoryTaskRepository implements TaskRepository {
     private tasks: Task[] = [];
     private doneTasks: DoneTask[] = [];
 
-    async findTaskByLabel(label: string, userId: number): Promise<Task | null> {
+    async findTaskByLabel(label: string, userId: string): Promise<Task | null> {
         return this.tasks.find(task => task.label === label && task.userId === userId) ?? null
     }
 
@@ -20,7 +20,11 @@ export class InMemoryTaskRepository implements TaskRepository {
         return doneTask;
     }
 
-    async countDoneTasksByDate(_userId: number, _date: Date): Promise<number> {
-        return 0;
+    async countDoneTasksByDate(_userId: string, _date: Date): Promise<number> {
+        return this.doneTasks.length;
+    }
+
+    async countTasksByUser(_userId: string): Promise<number> {
+        return this.tasks.length;
     }
 }

@@ -37,4 +37,8 @@ export class PrismaTaskRepository implements TaskRepository {
 
         return prisma.doneTask.count({where: {userId, doneAt: {gte: start, lte: end}}});
     }
+
+    async countTasksByUser(userId: string): Promise<number> {
+        return prisma.task.count({where: {userId}});
+    }
 }

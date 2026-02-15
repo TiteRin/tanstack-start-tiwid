@@ -16,3 +16,4 @@ todos.json
 storybook-static
 
 /generated/prisma
+prisma/*.db

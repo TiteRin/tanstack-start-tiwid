@@ -8,18 +8,21 @@ import {addDoneTaskServer} from "@/features/tasks/server/addDoneTask.functions.t
 
 type TaskFormProps = {
     addDoneTask?: typeof addDoneTaskServer
+    onTaskAdded?: (result: { message: string, dailyDoneCount: number }) => void
 }
 
 export default function TaskForm({addDoneTask}: TaskFormProps) {
 
     const [task, setTask] = useState<string>("");
-    const {submit, message, status} = useAddDoneTask(addDoneTask);
+    const {submit, status} = useAddDoneTask(addDoneTask);
 
     return (
-        <form onSubmit={(e) => {
+        <form onSubmit={async (e) => {
             e.preventDefault();
-            submit(task);
+            const result = await submit(task);
             setTask("");
+
+            if (!result) return;
         }}>
             <fieldset className={clsx('p-4 mb-2')}>
                 <Label aria-placeholder="e.g. I ran some errands ">My achievement</Label>
@@ -60,7 +63,6 @@ export default function TaskForm({addDoneTask}: TaskFormProps) {
             </Button>
 
             {status === "error" && <p className="text-red-500">Something went wrong…</p>}
-            {message && <p>{message}</p>}
         </form>
     )
 }

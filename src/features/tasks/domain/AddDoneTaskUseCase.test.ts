@@ -2,8 +2,8 @@ import {describe, it, expect, vi} from "vitest";
 import {AddDoneTaskUseCase} from "./AddDoneTaskUseCase.ts";
 import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
 import {TaskClock} from "@/features/tasks/domain/ports/TaskClock.ts";
-import {TaskFeedbackGenerator} from "@/features/tasks/domain/ports/TaskFeedbackGenerator.ts";
 import {Task} from "@/features/tasks/domain/entities/Task.ts";
+import {DoneTask} from "@/features/tasks/domain/entities/DoneTask.ts";
 
 describe("AddDoneTask (domain)", () => {
 
@@ -11,18 +11,16 @@ describe("AddDoneTask (domain)", () => {
         findTaskByLabel: async () => null,
         saveTask: async (task: any) => task,
         saveDoneTask: async (doneTask: any) => doneTask,
-        countDoneTasksByDate: async () => 0
+        countDoneTasksByDate: async () => 0,
+        countTasksByUser: async () => 0
     }
     const fakeClock: TaskClock = {
         now: () => new Date(),
     };
-    const fakeFeedbackGenerator: TaskFeedbackGenerator = {
-        generate: () => "Amazing!"
-    };
 
     it('creates an new task and a doneTask if task does not exist', async () => {
 
-        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock);
 
         const result = await action.execute({label: "I ran some errands", userId: "user-1"});
 
@@ -44,9 +42,10 @@ describe("AddDoneTask (domain)", () => {
             saveTask: vi.fn(async (task: Task) => task),
             saveDoneTask: vi.fn(async (doneTask) => doneTask),
             countDoneTasksByDate: vi.fn(async () => 0),
+            countTasksByUser: vi.fn(async () => 0)
         };
 
-        const action = new AddDoneTaskUseCase(spyRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(spyRepository, fakeClock);
         const result = await action.execute({label: "I ran some errands", userId: "user-1"});
 
         expect(result.task.id).toBe(task.id);
@@ -57,7 +56,7 @@ describe("AddDoneTask (domain)", () => {
 
     it("should fail when the label is empty", async () => {
 
-        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock);
         await expect(() => action.execute({label: "", userId: "user-1"})).rejects.toThrow();
     });
 
@@ -69,24 +68,40 @@ describe("AddDoneTask (domain)", () => {
             now: () => fixedDate,
         }
 
-        const action = new AddDoneTaskUseCase(fakeRepository, injectedClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, injectedClock);
         const result = await action.execute({label: "I ran some errands", userId: "user-1"});
         expect(result.doneTask.doneAt).toBe(fixedDate);
     });
 
+    it("returns the updated daily count on success", async () => {
 
-    it("returns a generated feedback message on success", async () => {
+        const today = new Date(2025, 2, 10);
+        const stubClock = {
+            now: () => today
+        }
 
-        const stubFeedback = {
-            generate: () => "Amazing!"
-        };
+        let doneTasks: DoneTask[] = [];
+
+        const mockRepository = {
+            findTaskByLabel: async () => null,
+            saveTask: async (task: Task) => task,
+            saveDoneTask: async (doneTask: DoneTask) => {
+                doneTasks.push(doneTask);
+                return doneTask;
+            },
+            countDoneTasksByDate: async (_userId: string, date: Date) => (
+                doneTasks.filter(doneTask => doneTask.doneAt.toDateString() === date.toDateString()).length
+            ),
+            countTasksByUser: async (_userId: string) => 0
+        }
 
         const action = new AddDoneTaskUseCase(
-            fakeRepository, fakeClock, stubFeedback as any
+            mockRepository, stubClock as any
         );
-
-        const result = await action.execute({label: "I ran some errands", userId: "user-1"});
-        expect(result.message).toBe("Amazing!");
-    });
+        const result1 = await action.execute({label: "I ran some errands", userId: "user-1"});
+        expect(result1.dailyDoneCount).toBe(1);
+        const result2 = await action.execute({label: "I did my workout", userId: "user-1"});
+        expect(result2.dailyDoneCount).toBe(2);
+    })
 
 });
