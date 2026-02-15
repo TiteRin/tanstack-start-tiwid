@@ -13,7 +13,7 @@ export const LoggedIn: Story = {
     args: {
         user: { id: "user-1", name: "Alice" },
         praise: "Amazing!",
-        dailySummary: "You’ve already done 3 tasks today!",
+        countDoneTasksToday: 3,
         countTotalTasks: 12,
     },
 };
