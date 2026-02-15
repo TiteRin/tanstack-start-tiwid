@@ -1,7 +1,7 @@
 import {prisma} from "@/server/prisma.server"
-import {HomeRepository} from "@/features/home/domain/getHomePageData.ts";
+import {HomePageRepository} from "@/features/home/infrastructure/HomePageRepository.ts";
 
-export class PrismaHomeRepository implements HomeRepository {
+export class PrismaHomeRepository implements HomePageRepository {
 
     async getUserById(userId: string) {
         const user = await prisma.user.findUnique({
