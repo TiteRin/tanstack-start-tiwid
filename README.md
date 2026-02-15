@@ -97,3 +97,8 @@ npm run check
 ```bash
 npm run storybook
 ```
+
+TODO: 
+- [ ] Add previous tasks as button to quickly add them to the current day
+- [ ] Let users rename their tasks and eliminate duplicates
+- [ ] Suggest tasks based on frequency of use
