@@ -79,6 +79,25 @@
     }
 }
 
+@keyframes praiseZoom {
+    0% {
+        transform: scale(0.8);
+    }
+
+    60% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.praise-animate {
+    animation: praiseZoom 300ms linear;
+}
+
+
 body {
     @apply m-0;
     @apply font-body text-primary;

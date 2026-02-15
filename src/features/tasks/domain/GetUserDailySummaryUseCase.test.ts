@@ -15,7 +15,7 @@ describe("GetUserDailySummary", () => {
         }
 
         const useCase = new GetUserDailySummaryUseCase(fakeRepository, fakeClock);
-        const result = await useCase.execute({userId: 1});
+        const result = await useCase.execute({userId: "1"});
 
         expect(result).toEqual({
             type: "today",
@@ -36,7 +36,7 @@ describe("GetUserDailySummary", () => {
             now: () => fakeNow
         }
         const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
-        const result = await useCase.execute({userId: 1});
+        const result = await useCase.execute({userId: "1"});
 
         expect(result).toEqual({
             type: "yesterday",
@@ -56,7 +56,7 @@ describe("GetUserDailySummary", () => {
             now: () => fakeNow
         }
         const useCase = new GetUserDailySummaryUseCase(fakeRepo as any, fakeClock);
-        const result = await useCase.execute({userId: 1});
+        const result = await useCase.execute({userId: "1"});
 
         expect(result).toEqual({
             type: "none",

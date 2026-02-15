@@ -1,16 +1,7 @@
-import {createFileRoute, Link, redirect} from '@tanstack/react-router'
+import {createFileRoute, Link, useNavigate} from '@tanstack/react-router'
 import {useSession} from '../lib/auth-client'
-import {getSessionServer} from "@/server/getSession.server.ts";
 
 export const Route = createFileRoute('/')({
-    loader: async () => {
-        const session = await getSessionServer();
-        if (session?.user?.id) {
-            throw redirect({ to: "/app"})
-        }
-
-        return null;
-    },
     component: App,
 })
 
@@ -37,11 +28,16 @@ function GuestWelcomeComponent() {
 }
 
 function App() {
-    const {isPending} = useSession()
+    const {data: session, isPending} = useSession()
+    const navigate = useNavigate()
 
     if (isPending) {
         return <div>Chargement...</div>
     }
 
-    return <GuestWelcomeComponent />
+    if (session) {
+        return navigate({to: "/app"});
+    }
+
+    return <GuestWelcomeComponent/>
 }

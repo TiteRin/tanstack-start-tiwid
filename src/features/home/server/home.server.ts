@@ -1,7 +1,8 @@
 import {PrismaHomeRepository} from "@/features/home/infrastructure/PrismaHomeRepository.ts";
-import {getHomePageData} from "@/features/home/server/getHomePageData.ts";
+import {GetHomePageDataUseCase} from "@/features/home/domain/GetHomePageDataUseCase.ts";
 
-export async function getHomeServerData(userId: string) {
+export async function getHomePageDataImpl(userId: string) {
     const repository = new PrismaHomeRepository();
-    return await getHomePageData(userId, repository);
+    const useCase = new GetHomePageDataUseCase(repository);
+    return await useCase.execute({userId});
 }

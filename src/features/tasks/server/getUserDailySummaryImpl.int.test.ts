@@ -5,7 +5,7 @@ import {prisma} from "@/server/prisma.server.ts";
 
 describe("getUserDailySummaryImpl - Integration Test", () => {
 
-    let userId: number;
+    let userId: string;
 
     beforeEach(async () => {
         await prisma.doneTask.deleteMany();
