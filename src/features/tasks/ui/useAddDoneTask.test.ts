@@ -10,6 +10,21 @@ vi.mock(
     })
 );
 
+const startOptimisticAddTask = vi.fn();
+const confirmAdd = vi.fn();
+const rollbackAdd = vi.fn();
+
+vi.mock(
+    "@/features/home/state/useHomeStore.ts",
+    () => ({
+        useHomeStore: () => ({
+            startOptimisticAddTask,
+            confirmAdd,
+            rollbackAdd
+        })
+    })
+);
+
 
 describe("useAddDoneTask - HOOK", () => {
 
@@ -83,3 +98,37 @@ describe("useAddDoneTask - HOOK", () => {
         });
     });
 });
+
+describe("useAddDoneTask - Optimistic flow", () => {
+    beforeEach(() => {
+        vi.resetAllMocks();
+    });
+
+    it("calls optimistic add when submit is called", async () => {
+        ;(addDoneTaskServer as any).mockResolvedValue({
+            dailyDoneCount: 2,
+            message: "Amazing!"
+        });
+
+        const {result} = renderHook(() => useAddDoneTask());
+        await act(async () => {
+            await result.current.submit("I ran some errands");
+        });
+
+        expect(startOptimisticAddTask).toHaveBeenCalled();
+        expect(confirmAdd).toHaveBeenCalled();
+    });
+
+    it("calls rollback when add fails", async () => {
+        ;(addDoneTaskServer as any).mockRejectedValue(new Error("Invalid input"));
+
+        const {result} = renderHook(() => useAddDoneTask());
+        await act(async () => {
+            await result.current.submit("I ran some errands");
+        });
+
+        expect(startOptimisticAddTask).toHaveBeenCalled();
+        expect(confirmAdd).not.toHaveBeenCalled();
+        expect(rollbackAdd).toHaveBeenCalled();
+    })
+})

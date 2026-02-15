@@ -1,10 +1,21 @@
 import {createStore} from "zustand/vanilla";
+import {PraiseGenerator} from "@/features/home/lib/praise.generator.ts";
+
+type HomeStoreDependencies = {
+    praiseGenerator: PraiseGenerator
+};
 
 type HomeState = {
     praise: string;
     countDoneTasksToday: number;
     countTotalTasks: number;
     isSubmitting: boolean;
+
+    _backup?: {
+        praise: string,
+        countDoneTasksToday: number,
+        countTotalTasks: number
+    }
 
     initializeFromSSR: (data: {
         praise: string,
@@ -16,8 +27,13 @@ type HomeState = {
     rollbackAdd: () => void;
 };
 
-export function createHomeStore() {
-    return createStore<HomeState>((set) => ({
+export function createHomeStore(deps: HomeStoreDependencies) {
+
+    const praiseGenerator = deps?.praiseGenerator ?? {
+        generate: () => "Good job!"
+    };
+
+    return createStore<HomeState>((set, get) => ({
         praise: "",
         countDoneTasksToday: 0,
         countTotalTasks: 0,
@@ -28,18 +44,38 @@ export function createHomeStore() {
             countDoneTasksToday: data.countDoneTasksToday,
             countTotalTasks: data.countTotalTasks
         }),
-        startOptimisticAddTask: () => set((state) => ({
-            praise: "Amazing!",
-            countDoneTasksToday: state.countDoneTasksToday + 1,
-            isSubmitting: true,
-        })),
-        confirmAdd: (payload) => set({
-            countTotalTasks: payload.countTotalTasks,
-            isSubmitting: false,
-        }),
-        rollbackAdd: () => set((state) => ({
-            isSubmitting: false,
-            countDoneTasksToday: state.countDoneTasksToday - 1,
-        }))
+        startOptimisticAddTask: () => {
+
+            const current = get();
+
+            set({
+                _backup: {
+                    praise: current.praise,
+                    countDoneTasksToday: current.countDoneTasksToday,
+                    countTotalTasks: current.countTotalTasks
+                },
+                praise: praiseGenerator.generate(),
+                countDoneTasksToday: current.countDoneTasksToday + 1,
+                isSubmitting: true,
+            });
+        },
+        confirmAdd: (payload) => {
+            set({
+                countTotalTasks: payload.countTotalTasks,
+                isSubmitting: false,
+            })
+        },
+        rollbackAdd:
+            () => {
+                const backup = get()._backup;
+                if (!backup) return;
+                set({
+                    praise: backup.praise,
+                    countDoneTasksToday: backup.countDoneTasksToday,
+                    countTotalTasks: backup.countTotalTasks,
+                    isSubmitting: false,
+                    _backup: undefined
+                });
+            }
     }))
 }

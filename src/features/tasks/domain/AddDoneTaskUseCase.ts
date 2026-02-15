@@ -14,7 +14,8 @@ export type AddDoneTaskInput = {
 export type AddDoneTaskResponse = {
     task: Task,
     doneTask: DoneTask,
-    dailyDoneCount: number
+    dailyDoneCount: number,
+    totalTasksCount: number
 }
 
 export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTaskResponse> {
@@ -54,7 +55,8 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
         return {
             task,
             doneTask,
-            dailyDoneCount: await this.repository.countDoneTasksByDate(userId, now)
+            dailyDoneCount: await this.repository.countDoneTasksByDate(userId, now),
+            totalTasksCount: await this.repository.countTasksByUser(userId)
         };
     }
 }

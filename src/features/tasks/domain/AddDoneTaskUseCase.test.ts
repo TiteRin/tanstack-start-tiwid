@@ -11,7 +11,8 @@ describe("AddDoneTask (domain)", () => {
         findTaskByLabel: async () => null,
         saveTask: async (task: any) => task,
         saveDoneTask: async (doneTask: any) => doneTask,
-        countDoneTasksByDate: async () => 0
+        countDoneTasksByDate: async () => 0,
+        countTasksByUser: async () => 0
     }
     const fakeClock: TaskClock = {
         now: () => new Date(),
@@ -41,6 +42,7 @@ describe("AddDoneTask (domain)", () => {
             saveTask: vi.fn(async (task: Task) => task),
             saveDoneTask: vi.fn(async (doneTask) => doneTask),
             countDoneTasksByDate: vi.fn(async () => 0),
+            countTasksByUser: vi.fn(async () => 0)
         };
 
         const action = new AddDoneTaskUseCase(spyRepository, fakeClock);
@@ -89,7 +91,8 @@ describe("AddDoneTask (domain)", () => {
             },
             countDoneTasksByDate: async (_userId: string, date: Date) => (
                 doneTasks.filter(doneTask => doneTask.doneAt.toDateString() === date.toDateString()).length
-            )
+            ),
+            countTasksByUser: async (_userId: string) => 0
         }
 
         const action = new AddDoneTaskUseCase(
