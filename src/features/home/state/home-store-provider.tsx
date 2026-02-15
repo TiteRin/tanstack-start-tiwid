@@ -11,7 +11,8 @@ export const HomeStoreContext = createContext<HomeStoreApi | null>(null);
 export function HomeStoreProvider(
     {
         children,
-        initialData
+        initialData,
+        store
     }:
     {
         children: React.ReactNode,
@@ -19,13 +20,14 @@ export function HomeStoreProvider(
             praise: string,
             countTotalTasks: number,
             countDoneTasksToday: number
-        }
+        },
+        store?: HomeStoreApi
     }) {
 
     const storeRef = useRef<HomeStoreApi | null>(null);
 
     if (!storeRef.current) {
-        storeRef.current = createHomeStore({
+        storeRef.current = store ?? createHomeStore({
             praiseGenerator: new RandomPraiseGenerator()
         });
         storeRef.current.getState().initializeFromSSR(initialData);

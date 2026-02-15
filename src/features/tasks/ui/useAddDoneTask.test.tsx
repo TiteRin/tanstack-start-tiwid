@@ -2,7 +2,9 @@ import {describe, it, expect, vi, beforeEach} from "vitest";
 import {renderHook, act} from "@testing-library/react";
 import {useAddDoneTask} from "./useAddDoneTask";
 import {addDoneTaskServer} from "@/features/tasks/server/addDoneTask.functions";
-import {TestHomeStoreProvider} from "@/features/home/state/home-store.test-utils.tsx";
+import {createHomeStore} from "@/features/home/state/home.store.ts";
+import {RandomPraiseGenerator} from "@/features/home/lib/praise.generator.ts";
+import {HomeStoreProvider} from "@/features/home/state/home-store-provider";
 
 vi.mock(
     "@/features/tasks/server/addDoneTask.functions.ts",
@@ -11,23 +13,14 @@ vi.mock(
     })
 );
 
-const startOptimisticAddTask = vi.fn();
-const confirmAdd = vi.fn();
-const rollbackAdd = vi.fn();
-
-vi.mock(
-    "@/features/home/state/useHomeStore.ts",
-    () => ({
-        useHomeStore: () => ({
-            startOptimisticAddTask,
-            confirmAdd,
-            rollbackAdd
-        })
-    })
-);
+let store: ReturnType<typeof createHomeStore>;
 
 const wrapper = ({children}: { children: React.ReactNode }) => (
-    <TestHomeStoreProvider>{children}</TestHomeStoreProvider>
+    <HomeStoreProvider store={store} initialData={{
+        praise: "You did it!",
+        countTotalTasks: 10,
+        countDoneTasksToday: 5
+    }}>{children}</HomeStoreProvider>
 );
 
 
@@ -52,7 +45,7 @@ describe("useAddDoneTask - HOOK", () => {
                 taskId: 1,
             }
         });
-        const {result} = renderHook(() => useAddDoneTask(), { wrapper });
+        const {result} = renderHook(() => useAddDoneTask(), {wrapper});
 
         await act(async () => {
             await result.current.submit("I ran some errands");
@@ -67,7 +60,7 @@ describe("useAddDoneTask - HOOK", () => {
             new Error("Invalid input")
         );
 
-        const {result} = renderHook(() => useAddDoneTask(), { wrapper });
+        const {result} = renderHook(() => useAddDoneTask(), {wrapper});
         await act(async () => {
             await result.current.submit("");
         });
@@ -91,7 +84,7 @@ describe("useAddDoneTask - HOOK", () => {
             }
         });
 
-        const {result} = renderHook(() => useAddDoneTask(), { wrapper });
+        const {result} = renderHook(() => useAddDoneTask(), {wrapper});
         await act(async () => {
             await result.current.submit("I ran some errands");
         });
@@ -103,37 +96,47 @@ describe("useAddDoneTask - HOOK", () => {
         });
     });
 });
-//
-// describe("useAddDoneTask - Optimistic flow", () => {
-//     beforeEach(() => {
-//         vi.resetAllMocks();
-//     });
-//
-//     it("calls optimistic add when submit is called", async () => {
-//         ;(addDoneTaskServer as any).mockResolvedValue({
-//             dailyDoneCount: 2,
-//             message: "Amazing!"
-//         });
-//
-//         const {result} = renderHook(() => useAddDoneTask(), { wrapper });
-//         await act(async () => {
-//             await result.current.submit("I ran some errands");
-//         });
-//
-//         expect(startOptimisticAddTask).toHaveBeenCalled();
-//         expect(confirmAdd).toHaveBeenCalled();
-//     });
-//
-//     it("calls rollback when add fails", async () => {
-//         ;(addDoneTaskServer as any).mockRejectedValue(new Error("Invalid input"));
-//
-//         const {result} = renderHook(() => useAddDoneTask(), { wrapper });
-//         await act(async () => {
-//             await result.current.submit("I ran some errands");
-//         });
-//
-//         expect(startOptimisticAddTask).toHaveBeenCalled();
-//         expect(confirmAdd).not.toHaveBeenCalled();
-//         expect(rollbackAdd).toHaveBeenCalled();
-//     })
-// })
+
+describe("useAddDoneTask - Optimistic flow", () => {
+
+    beforeEach(() => {
+
+        store = createHomeStore({
+            praiseGenerator: new RandomPraiseGenerator()
+        })
+
+        vi.spyOn(store.getState(), "startOptimisticAddTask");
+        vi.spyOn(store.getState(), "confirmAdd");
+        vi.spyOn(store.getState(), "rollbackAdd");
+
+        vi.resetAllMocks();
+    });
+
+    it("calls optimistic add when submit is called", async () => {
+        ;(addDoneTaskServer as any).mockResolvedValue({
+            dailyDoneCount: 2,
+            message: "Amazing!"
+        });
+
+        const {result} = renderHook(() => useAddDoneTask(), {wrapper});
+        await act(async () => {
+            await result.current.submit("I ran some errands");
+        });
+
+        expect(store.getState().startOptimisticAddTask).toHaveBeenCalled();
+        expect(store.getState().confirmAdd).toHaveBeenCalled();
+    });
+
+    it("calls rollback when add fails", async () => {
+        ;(addDoneTaskServer as any).mockRejectedValue(new Error("Invalid input"));
+
+        const {result} = renderHook(() => useAddDoneTask(), {wrapper});
+        await act(async () => {
+            await result.current.submit("I ran some errands");
+        });
+
+        expect(store.getState().startOptimisticAddTask).toHaveBeenCalled();
+        expect(store.getState().confirmAdd).not.toHaveBeenCalled();
+        expect(store.getState().rollbackAdd).toHaveBeenCalled();
+    })
+})

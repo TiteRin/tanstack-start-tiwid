@@ -12,8 +12,8 @@ type Story = StoryObj<typeof TaskForm>;
 
 export const HappyPath: Story = {
     render: () => {
-        // @ts-ignore
         return <TaskForm
+            // @ts-ignore
             addDoneTask={async (label: string, userId: string) => {
                 await new Promise((resolve) => setTimeout(resolve, 650));
                 return {
@@ -31,9 +31,6 @@ export const HappyPath: Story = {
                     },
                     dailyDoneCount: 1
                 }
-            }}
-            onTaskAdded={async (result) => {
-                console.log(result);
             }}
         />
     },

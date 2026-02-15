@@ -11,7 +11,7 @@ type TaskFormProps = {
     onTaskAdded?: (result: { message: string, dailyDoneCount: number }) => void
 }
 
-export default function TaskForm({addDoneTask, onTaskAdded}: TaskFormProps) {
+export default function TaskForm({addDoneTask}: TaskFormProps) {
 
     const [task, setTask] = useState<string>("");
     const {submit, status} = useAddDoneTask(addDoneTask);
@@ -23,7 +23,6 @@ export default function TaskForm({addDoneTask, onTaskAdded}: TaskFormProps) {
             setTask("");
 
             if (!result) return;
-            onTaskAdded?.(result);
         }}>
             <fieldset className={clsx('p-4 mb-2')}>
                 <Label aria-placeholder="e.g. I ran some errands ">My achievement</Label>
