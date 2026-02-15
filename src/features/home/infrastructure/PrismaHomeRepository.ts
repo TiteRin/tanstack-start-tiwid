@@ -1,5 +1,5 @@
 import {prisma} from "@/server/prisma.server"
-import {HomeRepository} from "@/features/home/server/getHomePageData.ts";
+import {HomeRepository} from "@/features/home/domain/getHomePageData.ts";
 
 export class PrismaHomeRepository implements HomeRepository {
 

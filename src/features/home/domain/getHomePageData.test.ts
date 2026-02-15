@@ -1,7 +1,7 @@
 // @vitest-environment node
 
 import {describe, it, expect, vi} from "vitest";
-import {getHomePageData} from "@/features/home/server/getHomePageData.ts";
+import {getHomePageData} from "@/features/home/domain/getHomePageData.ts";
 
 describe("getHomePageData", () => {
     it("returns structured home page data", async () => {
