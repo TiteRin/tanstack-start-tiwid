@@ -2,7 +2,6 @@ import {taskSchema} from "@/features/tasks/domain/TaskSchema.ts";
 
 import {TaskRepository} from "./ports/TaskRepository";
 import {TaskClock} from "./ports/TaskClock";
-import {TaskFeedbackGenerator} from "./ports/TaskFeedbackGenerator";
 import {Task} from "./entities/Task";
 import {DoneTask} from "./entities/DoneTask";
 import {UseCase} from "@/features/tasks/domain/UseCase.ts";
@@ -15,7 +14,6 @@ export type AddDoneTaskInput = {
 export type AddDoneTaskResponse = {
     task: Task,
     doneTask: DoneTask,
-    message: string,
     dailyDoneCount: number
 }
 
@@ -23,8 +21,7 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
 
     constructor(
         private repository: TaskRepository,
-        private clock: TaskClock,
-        private feedbackGenerator: TaskFeedbackGenerator
+        private clock: TaskClock
     ) {
     }
 
@@ -57,7 +54,6 @@ export class AddDoneTaskUseCase implements UseCase<AddDoneTaskInput, AddDoneTask
         return {
             task,
             doneTask,
-            message: this.feedbackGenerator.generate(),
             dailyDoneCount: await this.repository.countDoneTasksByDate(userId, now)
         };
     }

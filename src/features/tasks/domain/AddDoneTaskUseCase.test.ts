@@ -2,7 +2,6 @@ import {describe, it, expect, vi} from "vitest";
 import {AddDoneTaskUseCase} from "./AddDoneTaskUseCase.ts";
 import {TaskRepository} from "@/features/tasks/domain/ports/TaskRepository.ts";
 import {TaskClock} from "@/features/tasks/domain/ports/TaskClock.ts";
-import {TaskFeedbackGenerator} from "@/features/tasks/domain/ports/TaskFeedbackGenerator.ts";
 import {Task} from "@/features/tasks/domain/entities/Task.ts";
 import {DoneTask} from "@/features/tasks/domain/entities/DoneTask.ts";
 
@@ -17,13 +16,10 @@ describe("AddDoneTask (domain)", () => {
     const fakeClock: TaskClock = {
         now: () => new Date(),
     };
-    const fakeFeedbackGenerator: TaskFeedbackGenerator = {
-        generate: () => "Amazing!"
-    };
 
     it('creates an new task and a doneTask if task does not exist', async () => {
 
-        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock);
 
         const result = await action.execute({label: "I ran some errands", userId: "user-1"});
 
@@ -47,7 +43,7 @@ describe("AddDoneTask (domain)", () => {
             countDoneTasksByDate: vi.fn(async () => 0),
         };
 
-        const action = new AddDoneTaskUseCase(spyRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(spyRepository, fakeClock);
         const result = await action.execute({label: "I ran some errands", userId: "user-1"});
 
         expect(result.task.id).toBe(task.id);
@@ -58,7 +54,7 @@ describe("AddDoneTask (domain)", () => {
 
     it("should fail when the label is empty", async () => {
 
-        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, fakeClock);
         await expect(() => action.execute({label: "", userId: "user-1"})).rejects.toThrow();
     });
 
@@ -70,24 +66,9 @@ describe("AddDoneTask (domain)", () => {
             now: () => fixedDate,
         }
 
-        const action = new AddDoneTaskUseCase(fakeRepository, injectedClock, fakeFeedbackGenerator);
+        const action = new AddDoneTaskUseCase(fakeRepository, injectedClock);
         const result = await action.execute({label: "I ran some errands", userId: "user-1"});
         expect(result.doneTask.doneAt).toBe(fixedDate);
-    });
-
-
-    it("returns a generated feedback message on success", async () => {
-
-        const stubFeedback = {
-            generate: () => "Amazing!"
-        };
-
-        const action = new AddDoneTaskUseCase(
-            fakeRepository, fakeClock, stubFeedback as any
-        );
-
-        const result = await action.execute({label: "I ran some errands", userId: "user-1"});
-        expect(result.message).toBe("Amazing!");
     });
 
     it("returns the updated daily count on success", async () => {
@@ -112,7 +93,7 @@ describe("AddDoneTask (domain)", () => {
         }
 
         const action = new AddDoneTaskUseCase(
-            mockRepository, stubClock as any, {generate: () => "Amazing!"}
+            mockRepository, stubClock as any
         );
         const result1 = await action.execute({label: "I ran some errands", userId: "user-1"});
         expect(result1.dailyDoneCount).toBe(1);
