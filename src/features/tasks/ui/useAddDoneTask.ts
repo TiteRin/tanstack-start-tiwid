@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {TaskActionStatus} from "@/features/tasks/ui/taskAction.types.ts";
 import {addDoneTaskServer} from "@/features/tasks/server/addDoneTask.functions.ts";
-import {useHomeStore} from "@/features/home/state/useHomeStore.ts";
+import {useHomeStore} from "@/features/home/state/home-store-provider.tsx";
 
 type AddDoneTaskServer = typeof addDoneTaskServer;
 
@@ -9,26 +9,25 @@ export function useAddDoneTask(
     serverFn: AddDoneTaskServer = addDoneTaskServer,
 ) {
     const [status, setStatus] = useState<TaskActionStatus>("idle");
-    const store = useHomeStore({
-        praise: "",
-        countTotalTasks: 0,
-        countDoneTasksToday: 0
-    });
+
+    const startOptimisticAddTask = useHomeStore(state => state.startOptimisticAddTask);
+    const confirmAdd = useHomeStore(state => state.confirmAdd);
+    const rollbackAdd = useHomeStore(state => state.rollbackAdd);
 
     async function submit(task: string) {
 
         setStatus("submitting");
-        store.startOptimisticAddTask();
+        startOptimisticAddTask();
 
         try {
             const result = await serverFn({data: {label: task}});
             setStatus("success");
-            store.confirmAdd({countTotalTasks: result.totalTasksCount});
+            confirmAdd({countTotalTasks: result.totalTasksCount});
             return result;
         } catch (e) {
             console.error(e);
             setStatus("error");
-            store.rollbackAdd();
+            rollbackAdd();
             return null
         }
     }
