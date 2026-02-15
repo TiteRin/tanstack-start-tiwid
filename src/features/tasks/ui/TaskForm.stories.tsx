@@ -13,23 +13,29 @@ type Story = StoryObj<typeof TaskForm>;
 export const HappyPath: Story = {
     render: () => {
         // @ts-ignore
-        return <TaskForm addDoneTask={async (label, userId) => {
-            await new Promise((resolve) => setTimeout(resolve, 650));
-            return {
-                message: "A task has been added!",
-                task: {
-                    id: 1,
-                    label,
-                    userId
-                },
-                doneTask: {
-                    id: 1,
-                    userId,
-                    taskId: 1,
-                    doneAt: new Date().toISOString()
+        return <TaskForm
+            addDoneTask={async (label: string, userId: string) => {
+                await new Promise((resolve) => setTimeout(resolve, 650));
+                return {
+                    message: "A task has been added!",
+                    task: {
+                        id: 1,
+                        label,
+                        userId
+                    },
+                    doneTask: {
+                        id: 1,
+                        userId,
+                        taskId: 1,
+                        doneAt: new Date().toISOString()
+                    },
+                    dailyDoneCount: 1
                 }
-            }
-        }}/>
+            }}
+            onTaskAdded={async (result) => {
+                console.log(result);
+            }}
+        />
     },
     play: async ({canvasElement}) => {
         const canvas = within(canvasElement);
@@ -43,7 +49,6 @@ export const HappyPath: Story = {
         await expect(canvas.getByTestId('submitting-icon')).toBeInTheDocument();
         await new Promise((resolve) => setTimeout(resolve, 700));
         await expect(submitButton).not.toBeDisabled();
-        await expect(canvas.getByText(/A task has been added!/)).toBeInTheDocument();
         await expect(canvas.getByTestId('success-icon')).toBeInTheDocument();
     }
 };

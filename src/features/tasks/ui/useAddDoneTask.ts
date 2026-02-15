@@ -16,10 +16,12 @@ export function useAddDoneTask(serverFn: AddDoneTaskServer = addDoneTaskServer) 
             const result = await serverFn({data: {label: task}});
             setMessage(result.message);
             setStatus("success");
+            return result;
         } catch (e) {
             console.error(e);
             setMessage((e as any).message);
             setStatus("error");
+            return null
         }
     }
 
