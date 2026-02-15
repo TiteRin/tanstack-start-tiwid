@@ -1,7 +1,6 @@
 import {PrismaTaskRepository} from "@/features/tasks/infrastructure/PrismaTaskRepository.ts";
 import {GetUserDailySummaryUseCase} from "@/features/tasks/domain/GetUserDailySummaryUseCase.ts";
 import {AddDoneTaskUseCase} from "@/features/tasks/domain/AddDoneTaskUseCase.ts";
-import {RandomFeedbackGenerator} from "@/features/tasks/infrastructure/RandomFeedbackGenerator.ts";
 
 const clock = {
     now: () => new Date(),
@@ -17,6 +16,6 @@ export async function getUserDailySummaryImpl(userId: string) {
 export async function addDoneTaskImpl(label: string, userId: string) {
 
     const repo = new PrismaTaskRepository();
-    const action = new AddDoneTaskUseCase(repo, clock, new RandomFeedbackGenerator());
+    const action = new AddDoneTaskUseCase(repo, clock);
     return action.execute({label, userId});
 }

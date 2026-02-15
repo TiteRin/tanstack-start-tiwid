@@ -1,6 +1,8 @@
-import type {TaskFeedbackGenerator} from "@/features/tasks/domain/AddDoneTaskUseCase.ts";
+export interface PraiseGenerator {
+    generate(): string;
+}
 
-export class RandomFeedbackGenerator implements TaskFeedbackGenerator {
+export class RandomPraiseGenerator {
 
     private messages = [
         'Amazing!',
