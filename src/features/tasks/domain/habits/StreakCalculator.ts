@@ -8,10 +8,11 @@ export type StreakPattern =
 
 
 export class StreakCalculator {
-    calculate(dates: Date[], now: Date = new Date()): StreakPattern {
+
+    calculateStreak(dates: Date[], now: Date): { dailyStreak: number, weeklyStreak: number, monthlyStreak: number } {
 
         if (dates.length === 0) {
-            return {type: "none", value: 0}
+            return {dailyStreak: 0, weeklyStreak: 0, monthlyStreak: 0}
         }
 
         const normalizeNow = normalizeDate(now);
@@ -98,6 +99,16 @@ export class StreakCalculator {
             }
         }
 
+        return {
+            dailyStreak,
+            weeklyStreak,
+            monthlyStreak
+        }
+    }
+
+    calculate(dates: Date[], now: Date = new Date()): StreakPattern {
+
+        const {dailyStreak, weeklyStreak, monthlyStreak} = this.calculateStreak(dates, now);
         return this.getBestStreak(dailyStreak, weeklyStreak, monthlyStreak);
     }
 
